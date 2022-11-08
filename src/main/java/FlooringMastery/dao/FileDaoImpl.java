@@ -22,8 +22,10 @@ public class FileDaoImpl implements FileDao {
         String[] productTokens = line.split(DELIMITER);
         String productType = productTokens[0];
         Product productFromFile = new Product(productType);
-        productFromFile.setCostPerSquareFoot(new BigDecimal(productTokens[1]).
-                setScale(2, RoundingMode.DOWN));
+        productFromFile.setCostPerSquareFoot(new BigDecimal(productTokens[1])
+                .setScale(2, RoundingMode.DOWN));
+        productFromFile.setLaborCostPerSquareFoot(new BigDecimal(productTokens[2])
+                .setScale(2, RoundingMode.DOWN));
         return productFromFile;
     }
 
