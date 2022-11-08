@@ -95,7 +95,12 @@ public class Controller {
     private void editOrder() {
     }
 
-    private void removeOrder() {
+    private void removeOrder() throws PersistenceException {
+        LocalDate orderDate = view.getDateToRemove();
+        int orderNum = view.readOrderNumToRemoved();
+        Order orderToRemove = serviceLayer.getOrder(orderNum, orderDate);
+
+        view.confirmRemoveOrder(orderToRemove);
     }
 
     private void exportAllData() throws PersistenceException {

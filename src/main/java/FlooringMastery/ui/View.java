@@ -52,7 +52,8 @@ public class View {
     }
 
     public LocalDate getNewOrderDate() {
-        return io.readDate("Enter a date in the future for the new order.", LocalDate.now());
+        return io.readDate("Enter a date in the future for the new order.",
+                LocalDate.now());
     }
 
     public String getNewCustomerName() {
@@ -105,7 +106,19 @@ public class View {
 
 
 
+    public LocalDate getDateToRemove() {
+        return io.readDate("Enter a date for the Order to be removed. (MMDDYYYY)");
+    }
 
+    public int readOrderNumToRemoved() {
+        return io.readInt("Enter the Order # you wish to remove.");
+    }
+
+    public int confirmRemoveOrder(Order order) {
+        io.print(order.toString());
+        return io.readInt("Would you like to delete this order?" +
+                " Enter 1 for YES or 2 for NO.", 1, 2);
+    }
 
     public void displayExportBanner() {
         io.print("\n----- Export Order Data -----");
