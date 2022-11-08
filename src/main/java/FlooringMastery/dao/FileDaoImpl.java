@@ -190,7 +190,7 @@ public class FileDaoImpl implements FileDao {
     }
 
     @Override
-    public void writeNewSingleOrder(Order order, LocalDate date)
+    public void writeNewOrder(LocalDate date, Order order)
             throws PersistenceException {
         PrintWriter out;
 

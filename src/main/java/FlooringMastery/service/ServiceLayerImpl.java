@@ -2,8 +2,12 @@ package FlooringMastery.service;
 
 import FlooringMastery.dao.*;
 import FlooringMastery.model.Order;
+import FlooringMastery.model.Product;
+import FlooringMastery.model.State;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ServiceLayerImpl implements ServiceLayer {
@@ -42,9 +46,61 @@ public class ServiceLayerImpl implements ServiceLayer {
     }
 
     @Override
+    public Order createNewOrder(String newCustomerName, String newOrderState,
+                                String productType, BigDecimal newOrderArea)
+            throws PersistenceException {
+        return ORDER_DAO.createNewOrder(newCustomerName,
+                newOrderState, productType, newOrderArea);
+    }
+
+    @Override
+    public void addNewOrder(LocalDate newOrderDate, Order newOrder)
+            throws PersistenceException {
+        ORDER_DAO.addNewOrderToFile(newOrderDate, newOrder);
+        // Audit entry
+    }
+
+    @Override
     public void exportAllOrders() throws PersistenceException {
         String exportFile = "Backup/DataExport.txt";
         ORDER_DAO.exportAllData(exportFile);
         AUDIT_DAO.writeAuditEntry("All order data exported.");
+    }
+
+    @Override
+    public List<State> getStateInfoList() throws PersistenceException {
+        return FILE_DAO.readTaxFile("Data/Taxes.txt");
+    }
+
+    @Override
+    public List<String> getStateNameList() throws PersistenceException{
+        List<State> stateInfoList = getStateInfoList();
+        List<String> stateNameList = new ArrayList<>();
+        for (State state : stateInfoList)
+            stateNameList.add(state.getStateName());
+        return stateNameList;
+    }
+
+    @Override
+    public List<String> getStateAbbrList() throws PersistenceException {
+        List<State> stateInfoList = getStateInfoList();
+        List<String> stateAbbrList = new ArrayList<>();
+        for (State state : stateInfoList)
+            stateAbbrList.add(state.getStateAbbr());
+        return stateAbbrList;
+    }
+
+    @Override
+    public List<Product> getProductList() throws PersistenceException {
+        return FILE_DAO.readProductFile("Data/Products.txt");
+    }
+
+    @Override
+    public List<String> getProductTypeList() throws PersistenceException {
+        List<Product> productList = getProductList();
+        List<String> productTypeList = new ArrayList<>();
+        for (Product product : productList)
+            productTypeList.add(product.getProductType());
+        return productTypeList;
     }
 }

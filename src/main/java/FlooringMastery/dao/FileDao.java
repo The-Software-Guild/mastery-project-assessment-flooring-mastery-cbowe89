@@ -27,7 +27,7 @@ public interface FileDao {
 
     int generateNewOrderNum() throws PersistenceException;
 
-    void writeNewSingleOrder(Order order, LocalDate date) throws
+    void writeNewOrder(LocalDate date, Order order) throws
             PersistenceException;
 
     void writeEditOrder(Order originalOrder, Order editedOrder,

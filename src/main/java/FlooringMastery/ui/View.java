@@ -1,7 +1,9 @@
 package FlooringMastery.ui;
 
 import FlooringMastery.model.Order;
+import FlooringMastery.model.Product;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -44,6 +46,67 @@ public class View {
             io.print(order.toString());
         }
     }
+
+    public void displayAddOrderBanner() {
+        io.print("\n----- Add A New Order -----");
+    }
+
+    public LocalDate getNewOrderDate() {
+        return io.readDate("Enter a date in the future for the new order.", LocalDate.now());
+    }
+
+    public String getNewCustomerName() {
+        return io.readString("Enter a Customer Name for the new order.");
+    }
+
+    public String getNewOrderState(List<String> stateNameList) {
+        String stateName = io.readString("Enter a State name for the new order.");
+        while (!stateNameList.contains(stateName)) {
+            io.print("Invalid state entered.");
+            stateName = io.readString("Enter a valid State name.");
+        }
+        return stateName;
+    }
+
+    public String getProductType(List<Product> productList) {
+        int productNum = 1;
+
+        io.print("--- Available Products ---");
+        for (Product product : productList) {
+            io.print(productNum + ": " + product.toString());
+            productNum++;
+        }
+
+        int productSelection = io.readInt("Enter number for Product Type of new order.",
+                1, productList.size());
+
+        Product product = productList.get(productSelection - 1);
+
+        return product.getProductType();
+    }
+
+    public BigDecimal getNewOrderArea() {
+        return io.readBigDecimal("Enter area (square feet) for new order.",
+                BigDecimal.valueOf(100));
+    }
+
+    public int confirmPlaceNewOrder(Order newOrder) {
+        io.print(newOrder.toString());
+        return io.readInt("Would you like to place this order?" +
+                " Enter 1 for YES or 2 for NO.", 1, 2);
+    }
+
+    public void orderPlacedSuccessMsg() {
+        io.print("Order successfully placed!");
+        continueMessage();
+    }
+
+    public void orderDiscardedMsg() {
+        io.print("Order cancelled!");
+        continueMessage();
+    }
+
+
 
 
 

@@ -1,6 +1,7 @@
 package FlooringMastery.model;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.Objects;
 
 public class Order {
@@ -19,6 +20,14 @@ public class Order {
 
     public Order(int newOrderNumber) {
         this.orderNumber = newOrderNumber;
+    }
+
+    public Order(String newCustomerName, String newOrderState,
+                 String productType, BigDecimal newOrderArea) {
+        this.customerName = newCustomerName;
+        this.state = newOrderState;
+        this.productType = productType;
+        this.area = newOrderArea;
     }
 
     public Order(int orderNumber, String customerName, String state,

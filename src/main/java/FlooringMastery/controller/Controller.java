@@ -9,6 +9,7 @@ import FlooringMastery.ui.UserIO;
 import FlooringMastery.ui.UserIOConsoleImpl;
 import FlooringMastery.ui.View;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -68,7 +69,26 @@ public class Controller {
         }
     }
 
-    private void addOrder() {
+    private void addOrder() throws PersistenceException {
+        view.displayAddOrderBanner();
+        LocalDate newOrderDate = view.getNewOrderDate();
+        String newCustomerName = view.getNewCustomerName();
+        String newOrderState = view.getNewOrderState(serviceLayer.getStateNameList());
+        String productType = view.getProductType(serviceLayer.getProductList());
+        BigDecimal newOrderArea = view.getNewOrderArea();
+
+        Order newOrder = serviceLayer.createNewOrder(newCustomerName,
+                newOrderState, productType, newOrderArea);
+
+        int confirmAddOrder = view.confirmPlaceNewOrder(newOrder);
+
+        switch (confirmAddOrder) {
+            case 1 -> {
+                serviceLayer.addNewOrder(newOrderDate, newOrder);
+                view.orderPlacedSuccessMsg();
+            }
+            case 2 -> view.orderDiscardedMsg();
+        }
     }
 
     private void editOrder() {
