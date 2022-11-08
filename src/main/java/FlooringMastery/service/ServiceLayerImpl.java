@@ -48,9 +48,13 @@ public class ServiceLayerImpl implements ServiceLayer {
     @Override
     public Order createNewOrder(String newCustomerName, String newOrderState,
                                 String productType, BigDecimal newOrderArea)
-            throws PersistenceException {
-        return ORDER_DAO.createNewOrder(newCustomerName,
-                newOrderState, productType, newOrderArea);
+            throws PersistenceException, InvalidStateException {
+        List<String> stateNameList = getStateNameList();
+        if (!stateNameList.contains(newOrderState))
+            throw new InvalidStateException("State name not found.");
+        else
+            return ORDER_DAO.createNewOrder(newCustomerName,
+                    newOrderState, productType, newOrderArea);
     }
 
     @Override

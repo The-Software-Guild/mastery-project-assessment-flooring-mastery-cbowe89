@@ -59,13 +59,8 @@ public class View {
         return io.readString("Enter a Customer Name for the new order.");
     }
 
-    public String getNewOrderState(List<String> stateNameList) {
-        String stateName = io.readString("Enter a State name for the new order.");
-        while (!stateNameList.contains(stateName)) {
-            io.print("Invalid state entered.");
-            stateName = io.readString("Enter a valid State name.");
-        }
-        return stateName;
+    public String getNewOrderState() {
+        return io.readString("Enter a State Name for the new order.");
     }
 
     public String getProductType(List<Product> productList) {

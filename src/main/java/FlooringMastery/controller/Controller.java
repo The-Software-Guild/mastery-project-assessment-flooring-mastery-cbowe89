@@ -2,6 +2,7 @@ package FlooringMastery.controller;
 
 import FlooringMastery.dao.PersistenceException;
 import FlooringMastery.model.Order;
+import FlooringMastery.service.InvalidStateException;
 import FlooringMastery.service.OrderFileNotFoundException;
 import FlooringMastery.service.ServiceLayer;
 import FlooringMastery.service.ServiceLayerImpl;
@@ -51,7 +52,7 @@ public class Controller {
                     default -> view.displayUnknownCommand();
                 }
             }
-        } catch (PersistenceException e) {
+        } catch (PersistenceException | InvalidStateException e) {
             view.displayErrorMessage(e.getMessage());
         }
     }
@@ -69,11 +70,11 @@ public class Controller {
         }
     }
 
-    private void addOrder() throws PersistenceException {
+    private void addOrder() throws PersistenceException, InvalidStateException {
         view.displayAddOrderBanner();
         LocalDate newOrderDate = view.getNewOrderDate();
         String newCustomerName = view.getNewCustomerName();
-        String newOrderState = view.getNewOrderState(serviceLayer.getStateNameList());
+        String newOrderState = view.getNewOrderState();
         String productType = view.getProductType(serviceLayer.getProductList());
         BigDecimal newOrderArea = view.getNewOrderArea();
 

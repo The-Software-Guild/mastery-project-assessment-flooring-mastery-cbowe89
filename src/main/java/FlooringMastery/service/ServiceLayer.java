@@ -18,7 +18,7 @@ public interface ServiceLayer {
 
     Order createNewOrder(String newCustomerName, String newOrderState,
                          String productType, BigDecimal newOrderArea)
-            throws PersistenceException;
+            throws PersistenceException, InvalidStateException;
 
     void addNewOrder(LocalDate newOrderDate, Order newOrder)
             throws PersistenceException;
