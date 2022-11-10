@@ -7,5 +7,5 @@ import java.util.List;
 public interface ProductDao {
     List<Product> getAllProducts() throws PersistenceException;
 
-    Product getProduct() throws PersistenceException;
+    List<String> getProductTypeList() throws PersistenceException;
 }

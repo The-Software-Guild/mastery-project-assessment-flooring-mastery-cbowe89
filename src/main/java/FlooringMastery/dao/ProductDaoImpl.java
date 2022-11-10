@@ -2,6 +2,7 @@ package FlooringMastery.dao;
 
 import FlooringMastery.model.Product;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ProductDaoImpl implements ProductDao {
@@ -17,7 +18,11 @@ public class ProductDaoImpl implements ProductDao {
     }
 
     @Override
-    public Product getProduct() throws PersistenceException {
-        return null;
+    public List<String> getProductTypeList() throws PersistenceException {
+        List<Product> productList = getAllProducts();
+        List<String> productTypeList = new ArrayList<>();
+        for (Product p : productList)
+            productTypeList.add(p.getProductType());
+        return productTypeList;
     }
 }

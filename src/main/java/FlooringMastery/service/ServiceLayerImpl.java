@@ -12,18 +12,25 @@ import java.util.List;
 
 public class ServiceLayerImpl implements ServiceLayer {
     private final OrderDao ORDER_DAO;
+    private final ProductDao PRODUCT_DAO;
+    private final StateDao STATE_DAO;
     private final AuditDao AUDIT_DAO;
     private final FileDao FILE_DAO;
 
     public ServiceLayerImpl() {
         ORDER_DAO = new OrderDaoImpl();
+        PRODUCT_DAO = new ProductDaoImpl();
+        STATE_DAO = new StateDaoImpl();
         AUDIT_DAO = new AuditDaoImpl();
         FILE_DAO = new FileDaoImpl();
     }
 
-    public ServiceLayerImpl(OrderDao orderDao, AuditDao auditDao,
+    public ServiceLayerImpl(OrderDao orderDao, ProductDao productDao,
+                            StateDao stateDao, AuditDao auditDao,
                             FileDao fileDao) {
         this.ORDER_DAO = orderDao;
+        this.PRODUCT_DAO = productDao;
+        this.STATE_DAO = stateDao;
         this.AUDIT_DAO = auditDao;
         this.FILE_DAO = fileDao;
     }
@@ -57,7 +64,7 @@ public class ServiceLayerImpl implements ServiceLayer {
             List<String> stateNameList = getStateNameList();
             return ORDER_DAO.createNewOrder(newCustomerName,
                     newOrderState, productType, newOrderArea);
-        } catch (PersistenceException e) {
+        } catch (PersistenceException | TaxFileNotFoundException e) {
             throw new InvalidStateException("State name not found.");
         }
     }
@@ -78,7 +85,7 @@ public class ServiceLayerImpl implements ServiceLayer {
 
     @Override
     public List<State> getStateInfoList() throws PersistenceException {
-        return FILE_DAO.readTaxFile("Data/Taxes.txt");
+        return STATE_DAO.getStateInfoList();
     }
 
     @Override
@@ -114,7 +121,7 @@ public class ServiceLayerImpl implements ServiceLayer {
     public List<Product> getProductList() throws PersistenceException,
             ProductFileNotFoundException {
         try {
-            return FILE_DAO.readProductFile("Data/Products.txt");
+            return PRODUCT_DAO.getAllProducts();
         } catch (PersistenceException e) {
             throw new ProductFileNotFoundException("Could not retrieve Products.");
         }
@@ -124,11 +131,7 @@ public class ServiceLayerImpl implements ServiceLayer {
     public List<String> getProductTypeList() throws PersistenceException,
             ProductFileNotFoundException {
         try {
-            List<Product> productList = getProductList();
-            List<String> productTypeList = new ArrayList<>();
-            for (Product product : productList)
-                productTypeList.add(product.getProductType());
-            return productTypeList;
+            return PRODUCT_DAO.getProductTypeList();
         } catch (PersistenceException e) {
             throw new ProductFileNotFoundException("Could not retrieve Products.");
         }

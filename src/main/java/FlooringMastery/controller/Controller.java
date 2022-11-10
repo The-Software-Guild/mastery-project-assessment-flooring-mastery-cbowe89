@@ -2,10 +2,7 @@ package FlooringMastery.controller;
 
 import FlooringMastery.dao.PersistenceException;
 import FlooringMastery.model.Order;
-import FlooringMastery.service.InvalidStateException;
-import FlooringMastery.service.OrderFileNotFoundException;
-import FlooringMastery.service.ServiceLayer;
-import FlooringMastery.service.ServiceLayerImpl;
+import FlooringMastery.service.*;
 import FlooringMastery.ui.UserIO;
 import FlooringMastery.ui.UserIOConsoleImpl;
 import FlooringMastery.ui.View;
@@ -54,6 +51,8 @@ public class Controller {
             }
         } catch (PersistenceException | InvalidStateException e) {
             view.displayErrorMessage(e.getMessage());
+        } catch (OrderNotFoundException | ProductFileNotFoundException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -70,7 +69,8 @@ public class Controller {
         }
     }
 
-    private void addOrder() throws PersistenceException, InvalidStateException {
+    private void addOrder() throws PersistenceException, InvalidStateException,
+            ProductFileNotFoundException {
         view.displayAddOrderBanner();
         LocalDate newOrderDate = view.getNewOrderDate();
         String newCustomerName = view.getNewCustomerName();
@@ -95,12 +95,10 @@ public class Controller {
     private void editOrder() {
     }
 
-    private void removeOrder() throws PersistenceException {
+    private void removeOrder() throws PersistenceException, OrderNotFoundException {
         LocalDate orderDate = view.getDateToRemove();
         int orderNum = view.readOrderNumToRemoved();
         Order orderToRemove = serviceLayer.getOrder(orderNum, orderDate);
-
-        if ()
 
         int confirmRemove = view.confirmRemoveOrder(orderToRemove);
         switch (confirmRemove) {
