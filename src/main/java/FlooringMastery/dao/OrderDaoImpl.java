@@ -62,7 +62,7 @@ public class OrderDaoImpl implements OrderDao {
         BigDecimal total = calculateTotal(tax, materialCost, laborCost);
 
         Order newOrder = new Order(newCustomerName, stateAbbr, productType, newOrderArea);
-        newOrder.setOrderNumber(FILE_DAO.generateNewOrderNum());
+        newOrder.setOrderNumber(generateNewOrderNum());
         newOrder.setTaxRate(taxRate);
         newOrder.setCostPerSquareFoot(costPerSqFt);
         newOrder.setLaborCostPerSquareFoot(laborCostPerSqFt);
@@ -123,7 +123,7 @@ public class OrderDaoImpl implements OrderDao {
      * @return int newOrderNum
      * @throws PersistenceException if error occurs reading files
      */
-    private int generateOrderNumber() throws PersistenceException {
+    private int generateNewOrderNum() throws PersistenceException {
         // Declare variables
         int newOrderNum; // To be generated
         Order lastOrder; // To store number of last order
