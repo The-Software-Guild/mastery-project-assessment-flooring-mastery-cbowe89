@@ -4,12 +4,15 @@ import FlooringMastery.model.Order;
 import FlooringMastery.model.Product;
 import FlooringMastery.model.State;
 
+import java.io.File;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public class OrderDaoImpl implements OrderDao {
     private final String ORDER_FILE;
@@ -112,5 +115,53 @@ public class OrderDaoImpl implements OrderDao {
     private BigDecimal calculateTotal(BigDecimal tax, BigDecimal materialCost,
                                       BigDecimal laborCost) {
         return tax.add(materialCost).add(laborCost);
+    }
+
+    /**
+     * Private method fetches the latest order number assigned, then
+     * calculates and returns a new order number to assign to a new order
+     * @return int newOrderNum
+     * @throws PersistenceException if error occurs reading files
+     */
+    private int generateOrderNumber() throws PersistenceException {
+        // Declare variables
+        int newOrderNum; // To be generated
+        Order lastOrder; // To store number of last order
+        List<Order> orderList; // To store list of orders in the latest Order file
+        String dateString; // To store date portion of Order file name
+
+        // Formatter to match date format in Order file names
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("MMddyyyy");
+
+        // Create File object for directory
+        File directoryPath = new File("Orders");
+
+        try {
+            // Declare and initialize list with names of all order files
+            List<String> orderFileNames =
+                    List.of(Objects.requireNonNull(directoryPath.list()));
+
+            // Latest Order file will have most recently assigned Order number
+            String latestOrderFile = orderFileNames.get(orderFileNames.size() - 1);
+
+            // Set dateString to date of Order file
+            dateString = latestOrderFile.substring(7, 15);
+
+            // Create LocalDate object from dateString
+            LocalDate localDate = LocalDate.parse(dateString, dateTimeFormatter);
+
+            // Read Order file, store in orderList
+            orderList = FILE_DAO.readOrderFile(localDate);
+
+            // Last Order in file will have the last Order number assigned
+            lastOrder = orderList.get(orderList.size() - 1);
+
+            // Add 1 to last Order number assigned, store as newOrderNum
+            newOrderNum = lastOrder.getOrderNumber() + 1;
+
+            return newOrderNum;
+        } catch (Exception e) {
+            throw new PersistenceException("Unable to generate new order number.");
+        }
     }
 }

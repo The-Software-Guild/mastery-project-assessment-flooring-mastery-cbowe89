@@ -160,38 +160,6 @@ public class FileDaoImpl implements FileDao {
     }
 
     @Override
-    public int generateNewOrderNum() throws PersistenceException {
-        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("MMddyyyy");
-        int newOrderNum;
-        Order lastOrder;
-        List<Order> orderList;
-        String dateString;
-
-        // Create File object for directory
-        File directoryPath = new File("Orders");
-
-        // Declare and initialize list with names of all order files
-        List<String> orderFileNames =
-                List.of(Objects.requireNonNull(directoryPath.list()));
-
-        String newestOrderFile = orderFileNames.get(orderFileNames.size() - 1);
-
-        // Set dateString to date of file
-        dateString = newestOrderFile.substring(7, 15);
-
-        LocalDate localDate = LocalDate.parse(dateString, dateTimeFormatter);
-
-        // Read order file
-        orderList = readOrderFile(localDate);
-
-        lastOrder = orderList.get(orderList.size() - 1);
-
-        newOrderNum = lastOrder.getOrderNumber() + 1;
-
-        return newOrderNum;
-    }
-
-    @Override
     public void writeNewOrder(LocalDate date, Order order)
             throws PersistenceException {
         PrintWriter out;

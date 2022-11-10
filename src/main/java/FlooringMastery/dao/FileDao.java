@@ -25,8 +25,6 @@ public interface FileDao {
 
     String marshallOrder(Order order);
 
-    int generateNewOrderNum() throws PersistenceException;
-
     void writeNewOrder(LocalDate date, Order order) throws
             PersistenceException;
 
