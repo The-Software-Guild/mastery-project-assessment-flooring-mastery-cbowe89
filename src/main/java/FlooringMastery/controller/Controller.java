@@ -100,7 +100,11 @@ public class Controller {
         int orderNum = view.readOrderNumToRemoved();
         Order orderToRemove = serviceLayer.getOrder(orderNum, orderDate);
 
-        view.confirmRemoveOrder(orderToRemove);
+        int confirmRemove = view.confirmRemoveOrder(orderToRemove);
+        switch (confirmRemove) {
+            case 1 -> ;
+            case 2 -> ;
+        }
     }
 
     private void exportAllData() throws PersistenceException {
