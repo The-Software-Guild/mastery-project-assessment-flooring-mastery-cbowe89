@@ -100,6 +100,8 @@ public class Controller {
         int orderNum = view.readOrderNumToRemoved();
         Order orderToRemove = serviceLayer.getOrder(orderNum, orderDate);
 
+        if ()
+
         int confirmRemove = view.confirmRemoveOrder(orderToRemove);
         switch (confirmRemove) {
             case 1 -> ;

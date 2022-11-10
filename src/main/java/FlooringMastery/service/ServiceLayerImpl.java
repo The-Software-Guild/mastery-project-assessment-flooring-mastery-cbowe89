@@ -30,31 +30,36 @@ public class ServiceLayerImpl implements ServiceLayer {
 
     @Override
     public Order getOrder(int orderNumber, LocalDate orderDate)
-            throws PersistenceException {
-        return ORDER_DAO.getOrder(orderNumber, orderDate);
+            throws PersistenceException, OrderNotFoundException {
+        try {
+            return ORDER_DAO.getOrder(orderNumber, orderDate);
+        } catch (PersistenceException e) {
+            throw new OrderNotFoundException("No order found matching the "
+                    + "date and order number entered.");
+        }
     }
 
     @Override
     public List<Order> getAllOrders(LocalDate dateEntered)
             throws PersistenceException, OrderFileNotFoundException {
-        List<Order> ordersForDateEntered = ORDER_DAO.getAllOrders(dateEntered);
-
-        if (ordersForDateEntered.isEmpty())
+        try {
+            return ORDER_DAO.getAllOrders(dateEntered);
+        } catch (PersistenceException e) {
             throw new OrderFileNotFoundException("No orders for date entered.");
-        else
-            return ordersForDateEntered;
+        }
     }
 
     @Override
     public Order createNewOrder(String newCustomerName, String newOrderState,
                                 String productType, BigDecimal newOrderArea)
             throws PersistenceException, InvalidStateException {
-        List<String> stateNameList = getStateNameList();
-        if (!stateNameList.contains(newOrderState))
-            throw new InvalidStateException("State name not found.");
-        else
+        try {
+            List<String> stateNameList = getStateNameList();
             return ORDER_DAO.createNewOrder(newCustomerName,
                     newOrderState, productType, newOrderArea);
+        } catch (PersistenceException e) {
+            throw new InvalidStateException("State name not found.");
+        }
     }
 
     @Override
@@ -77,34 +82,55 @@ public class ServiceLayerImpl implements ServiceLayer {
     }
 
     @Override
-    public List<String> getStateNameList() throws PersistenceException{
-        List<State> stateInfoList = getStateInfoList();
-        List<String> stateNameList = new ArrayList<>();
-        for (State state : stateInfoList)
-            stateNameList.add(state.getStateName());
-        return stateNameList;
+    public List<String> getStateNameList() throws PersistenceException,
+            TaxFileNotFoundException {
+        try {
+            List<State> stateInfoList = getStateInfoList();
+            List<String> stateNameList = new ArrayList<>();
+            for (State state : stateInfoList)
+                stateNameList.add(state.getStateName());
+            return stateNameList;
+        } catch (PersistenceException e) {
+            throw new TaxFileNotFoundException("Could not retrieve State/Tax data.");
+        }
+
     }
 
     @Override
-    public List<String> getStateAbbrList() throws PersistenceException {
-        List<State> stateInfoList = getStateInfoList();
-        List<String> stateAbbrList = new ArrayList<>();
-        for (State state : stateInfoList)
-            stateAbbrList.add(state.getStateAbbr());
-        return stateAbbrList;
+    public List<String> getStateAbbrList() throws PersistenceException,
+            TaxFileNotFoundException {
+        try {
+            List<State> stateInfoList = getStateInfoList();
+            List<String> stateAbbrList = new ArrayList<>();
+            for (State state : stateInfoList)
+                stateAbbrList.add(state.getStateAbbr());
+            return stateAbbrList;
+        } catch (PersistenceException e) {
+            throw new TaxFileNotFoundException("Could not retrieve State/Tax data.");
+        }
     }
 
     @Override
-    public List<Product> getProductList() throws PersistenceException {
-        return FILE_DAO.readProductFile("Data/Products.txt");
+    public List<Product> getProductList() throws PersistenceException,
+            ProductFileNotFoundException {
+        try {
+            return FILE_DAO.readProductFile("Data/Products.txt");
+        } catch (PersistenceException e) {
+            throw new ProductFileNotFoundException("Could not retrieve Products.");
+        }
     }
 
     @Override
-    public List<String> getProductTypeList() throws PersistenceException {
-        List<Product> productList = getProductList();
-        List<String> productTypeList = new ArrayList<>();
-        for (Product product : productList)
-            productTypeList.add(product.getProductType());
-        return productTypeList;
+    public List<String> getProductTypeList() throws PersistenceException,
+            ProductFileNotFoundException {
+        try {
+            List<Product> productList = getProductList();
+            List<String> productTypeList = new ArrayList<>();
+            for (Product product : productList)
+                productTypeList.add(product.getProductType());
+            return productTypeList;
+        } catch (PersistenceException e) {
+            throw new ProductFileNotFoundException("Could not retrieve Products.");
+        }
     }
 }

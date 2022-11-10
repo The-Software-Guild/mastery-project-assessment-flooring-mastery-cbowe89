@@ -11,7 +11,7 @@ import java.util.List;
 
 public interface ServiceLayer {
     Order getOrder(int orderNumber, LocalDate orderDate)
-            throws PersistenceException;
+            throws PersistenceException, OrderNotFoundException;
 
     List<Order> getAllOrders(LocalDate dateEntered)
             throws PersistenceException, OrderFileNotFoundException;
@@ -27,11 +27,11 @@ public interface ServiceLayer {
 
     List<State> getStateInfoList() throws PersistenceException;
 
-    List<String> getStateNameList() throws PersistenceException;
+    List<String> getStateNameList() throws PersistenceException, TaxFileNotFoundException;
 
-    List<String> getStateAbbrList() throws PersistenceException;
+    List<String> getStateAbbrList() throws PersistenceException, TaxFileNotFoundException;
 
-    List<Product> getProductList() throws PersistenceException;
+    List<Product> getProductList() throws PersistenceException, ProductFileNotFoundException;
 
-    List<String> getProductTypeList() throws PersistenceException;
+    List<String> getProductTypeList() throws PersistenceException, ProductFileNotFoundException;
 }
