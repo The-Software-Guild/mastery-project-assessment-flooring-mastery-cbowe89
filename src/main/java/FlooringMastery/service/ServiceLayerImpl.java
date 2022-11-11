@@ -7,7 +7,6 @@ import FlooringMastery.model.State;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
 public class ServiceLayerImpl implements ServiceLayer {
@@ -77,8 +76,17 @@ public class ServiceLayerImpl implements ServiceLayer {
     }
 
     @Override
-    public void removeOrder(LocalDate orderDate, Order orderToRemove) {
+    public void editOrder(LocalDate orderDate, Order editedOrder)
+            throws PersistenceException {
+        ORDER_DAO.editOrder(orderDate, editedOrder);
+        // Audit Entry
+    }
 
+    @Override
+    public void removeOrder(LocalDate orderDate, Order orderToRemove)
+            throws PersistenceException {
+        ORDER_DAO.removeOrder(orderDate, orderToRemove);
+        // Audit entry
     }
 
     @Override

@@ -81,6 +81,18 @@ public class OrderDaoImpl implements OrderDao {
     }
 
     @Override
+    public void editOrder(LocalDate orderDate, Order editedOrder)
+            throws PersistenceException {
+
+    }
+
+    @Override
+    public void removeOrder(LocalDate orderDate, Order order)
+            throws PersistenceException {
+
+    }
+
+    @Override
     public void exportAllData(String exportFile) throws PersistenceException {
         FILE_DAO.exportAllData(exportFile);
     }

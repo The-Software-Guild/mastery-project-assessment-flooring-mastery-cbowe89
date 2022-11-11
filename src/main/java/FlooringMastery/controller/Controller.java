@@ -50,8 +50,8 @@ public class Controller {
                 }
             }
         } catch (PersistenceException | InvalidStateException |
-                 OrderNotFoundException | ProductFileNotFoundException |
-                 TaxFileNotFoundException e) {
+                 ProductFileNotFoundException | TaxFileNotFoundException |
+                 OrderNotFoundException | OrderFileNotFoundException e) {
             view.displayErrorMessage(e.getMessage());
         }
     }
@@ -94,7 +94,49 @@ public class Controller {
         }
     }
 
-    private void editOrder() {
+    private void editOrder() throws PersistenceException, OrderFileNotFoundException {
+        try {
+            LocalDate orderDate = view.getDateToEdit();
+            int orderNum = view.readOrderNumToEdit();
+            Order orderToEdit = serviceLayer.getOrder(orderNum, orderDate);
+
+            String newCustomerName =
+                    view.editOrderCustomerName(orderToEdit.getCustomerName());
+
+            String newState = view.editOrderState(orderToEdit.getState(),
+                    serviceLayer.getStateNameList());
+
+            String newProductType = view.editOrderProductType(
+                    orderToEdit.getProductType(), serviceLayer.getProductList(),
+                    serviceLayer.getProductTypeList());
+
+            BigDecimal newOrderArea = view.editOrderArea(orderToEdit.getArea());
+
+            Order editedOrder = new Order(newCustomerName, newState,
+                    newProductType, newOrderArea);
+
+            if (orderToEdit.getCustomerName().equals(editedOrder.getCustomerName())
+                    && orderToEdit.getState().equals(editedOrder.getState())
+                    && orderToEdit.getProductType().equals(editedOrder.getProductType())
+                    && orderToEdit.getArea().equals(editedOrder.getArea())) {
+                view.displayNoInfoChangedMsg();
+                return;
+            }
+
+            int confirmEditOrder = view.confirmEditOrder();
+
+            switch (confirmEditOrder) {
+                case 1 -> {
+                    serviceLayer.editOrder(orderDate, editedOrder);
+                    view.editSuccessMsg();
+                }
+                case 2 -> view.editDiscardedMsg();
+            }
+
+        } catch (PersistenceException | OrderNotFoundException |
+                 TaxFileNotFoundException | ProductFileNotFoundException e) {
+            view.displayErrorMessage(e.getMessage());
+        }
     }
 
     private void removeOrder() throws PersistenceException, OrderNotFoundException {

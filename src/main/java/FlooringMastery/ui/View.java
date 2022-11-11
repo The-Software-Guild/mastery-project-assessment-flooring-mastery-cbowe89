@@ -114,7 +114,85 @@ public class View {
         return io.readInt("Enter the Order # you with to edit.");
     }
 
+    public String editOrderCustomerName(String oldCustomerName) {
+        io.print("Current customer name: " + oldCustomerName);
+        String newCustomerName = io.readString("Type new Customer Name " +
+                "or press Enter to leave unchanged.");
+        if (newCustomerName.equals(""))
+            return oldCustomerName;
+        else
+            return newCustomerName;
+    }
 
+    public String editOrderState(String oldStateName, List<String> stateNameList) {
+        io.print("Current State: " + oldStateName);
+
+        String newStateName = io.readString("Type new State Name or press " +
+                "Enter to leave unchanged.");
+
+        while (!stateNameList.contains(newStateName)) {
+            if (newStateName.equals(""))
+                return oldStateName;
+
+            newStateName = io.readString("Invalid entry! Please enter a " +
+                    "valid State Name or press Enter to leave unchanged.");
+        }
+
+        return newStateName;
+    }
+
+    public String editOrderProductType(String oldProductType, List<Product> productList,
+                                       List<String> productTypeList) {
+        io.print("Current Product Type: " + oldProductType);
+
+        int productNum = 1;
+        io.print("--- Available Products ---");
+        for (Product product : productList) {
+            io.print(productNum + ": " + product.toString());
+            productNum++;
+        }
+
+        String newProductType = io.readString("Type new Product Type or " +
+                "press Enter to leave unchanged.");
+
+        while (!productTypeList.contains(newProductType)) {
+            if (newProductType.equals(""))
+                return oldProductType;
+
+            newProductType = io.readString( "Invalid entry! Enter " +
+                    "a valid Product Type or press Enter to leave unchanged.");
+        }
+
+        return newProductType;
+    }
+
+    public BigDecimal editOrderArea(BigDecimal oldArea) {
+        io.print("Current Area: " + oldArea);
+
+        String newArea = io.readString("Type new Area or press " +
+                "Enter to leave unchanged.");
+        while (!newArea.equals("") ||)
+    }
+
+    public void displayNoInfoChangedMsg() {
+        io.print("All order information is unchanged. Order will not be edited.");
+        continueMessage();
+    }
+
+    public int confirmEditOrder() {
+        return io.readInt("Do you want to save the edited Order?" +
+                " Enter 1 for Yes or 2 for No.", 1, 2);
+    }
+
+    public void editSuccessMsg() {
+        io.print("Order edited successfully!");
+        continueMessage();
+    }
+
+    public void editDiscardedMsg() {
+        io.print("Edit cancelled! Order was not updated.");
+        continueMessage();
+    }
 
     public LocalDate getDateToRemove() {
         return io.readDate("Enter a date for the Order to be removed. (MMDDYYYY)");
@@ -177,4 +255,6 @@ public class View {
     public void continueMessage() {
         io.readString("Press Enter to Continue...");
     }
+
+
 }
