@@ -33,7 +33,6 @@
 
     <bean id="serviceLayer" class="FlooringMastery.service.ServiceLayerImpl">
         <constructor-arg ref="auditDao"/>
-        <constructor-arg ref="fileDao"/>
         <constructor-arg ref="orderDao"/>
         <constructor-arg ref="productDao"/>
         <constructor-arg ref="stateDao"/>

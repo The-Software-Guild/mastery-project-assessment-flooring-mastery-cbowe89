@@ -81,9 +81,39 @@ public class OrderDaoImpl implements OrderDao {
     }
 
     @Override
-    public void editOrder(LocalDate orderDate, Order editedOrder)
-            throws PersistenceException {
+    public Order createEditedOrder(Order order, String newName,
+                                   String newState, String newProductType,
+                                   BigDecimal newArea) throws PersistenceException {
+        State state = getStateInfo(newState);
+        String stateAbbr = state.getStateAbbr();
+        BigDecimal taxRate = state.getTaxRate();
 
+        Product product = getProductInfo(newProductType);
+        BigDecimal costPerSqFt = product.getCostPerSquareFoot();
+        BigDecimal laborCostPerSqFt = product.getLaborCostPerSquareFoot();
+
+        BigDecimal materialCost = calculateMaterialCost(costPerSqFt, newArea);
+        BigDecimal laborCost = calculateLaborCost(laborCostPerSqFt, newArea);
+        BigDecimal tax = calculateTax(taxRate, materialCost, laborCost);
+        BigDecimal total = calculateTotal(tax, materialCost, laborCost);
+
+        Order editedOrder = new Order(newName, stateAbbr, newProductType, newArea);
+        editedOrder.setOrderNumber(order.getOrderNumber());
+        editedOrder.setTaxRate(taxRate);
+        editedOrder.setCostPerSquareFoot(costPerSqFt);
+        editedOrder.setLaborCostPerSquareFoot(laborCostPerSqFt);
+        editedOrder.setMaterialCost(materialCost);
+        editedOrder.setLaborCost(laborCost);
+        editedOrder.setTax(tax);
+        editedOrder.setTotal(total);
+
+        return editedOrder;
+    }
+
+    @Override
+    public void editOrder(LocalDate orderDate, Order orderToEdit, Order editedOrder)
+            throws PersistenceException {
+        FILE_DAO.writeEditOrder(orderToEdit,editedOrder, orderDate);
     }
 
     @Override

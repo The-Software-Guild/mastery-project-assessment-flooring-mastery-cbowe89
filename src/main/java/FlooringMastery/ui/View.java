@@ -111,7 +111,7 @@ public class View {
     }
 
     public int readOrderNumToEdit() {
-        return io.readInt("Enter the Order # you with to edit.");
+        return io.readInt("Enter the Order # for the order to be edited.");
     }
 
     public String editOrderCustomerName(String oldCustomerName) {
@@ -190,8 +190,9 @@ public class View {
         continueMessage();
     }
 
-    public int confirmEditOrder(Order editedOrder) {
-        io.print(editedOrder.toString());
+    public int confirmEditOrder(Order orderToEdit, Order editedOrder) {
+        io.print("Original Order:\n" + orderToEdit.toString());
+        io.print("Edited Order:\n" + editedOrder.toString());
         return io.readInt("Do you want to save the edited Order?" +
                 " Enter 1 for Yes or 2 for No.", 1, 2);
     }
@@ -261,6 +262,11 @@ public class View {
     public void displayErrorMessage(String errorMsg) {
         io.print("\n===== ERROR =====");
         io.print(errorMsg);
+        continueMessage();
+    }
+
+    public void displayNullOrderMsg() {
+        io.print("Unable to find order match the Date and Order # entered.");
         continueMessage();
     }
 

@@ -14,29 +14,25 @@ public class ServiceLayerImpl implements ServiceLayer {
     private final ProductDao PRODUCT_DAO;
     private final StateDao STATE_DAO;
     private final AuditDao AUDIT_DAO;
-    private final FileDao FILE_DAO;
 
     public ServiceLayerImpl() {
         ORDER_DAO = new OrderDaoImpl();
         PRODUCT_DAO = new ProductDaoImpl();
         STATE_DAO = new StateDaoImpl();
         AUDIT_DAO = new AuditDaoImpl();
-        FILE_DAO = new FileDaoImpl();
     }
 
     public ServiceLayerImpl(OrderDao orderDao, ProductDao productDao,
-                            StateDao stateDao, AuditDao auditDao,
-                            FileDao fileDao) {
+                            StateDao stateDao, AuditDao auditDao) {
         this.ORDER_DAO = orderDao;
         this.PRODUCT_DAO = productDao;
         this.STATE_DAO = stateDao;
         this.AUDIT_DAO = auditDao;
-        this.FILE_DAO = fileDao;
     }
 
     @Override
     public Order getOrder(int orderNumber, LocalDate orderDate)
-            throws PersistenceException, OrderNotFoundException {
+            throws OrderNotFoundException {
         try {
             return ORDER_DAO.getOrder(orderNumber, orderDate);
         } catch (PersistenceException e) {
@@ -47,7 +43,7 @@ public class ServiceLayerImpl implements ServiceLayer {
 
     @Override
     public List<Order> getAllOrders(LocalDate dateEntered)
-            throws PersistenceException, OrderFileNotFoundException {
+            throws OrderFileNotFoundException {
         try {
             return ORDER_DAO.getAllOrders(dateEntered);
         } catch (PersistenceException e) {
@@ -58,14 +54,10 @@ public class ServiceLayerImpl implements ServiceLayer {
     @Override
     public Order createNewOrder(String newCustomerName, String newOrderState,
                                 String productType, BigDecimal newOrderArea)
-            throws PersistenceException, InvalidStateException {
-        try {
-            List<String> stateNameList = getStateNameList();
-            return ORDER_DAO.createNewOrder(newCustomerName,
-                    newOrderState, productType, newOrderArea);
-        } catch (PersistenceException | TaxFileNotFoundException e) {
-            throw new InvalidStateException("State name not found.");
-        }
+            throws PersistenceException, TaxFileNotFoundException {
+        List<String> stateNameList = getStateNameList();
+        return ORDER_DAO.createNewOrder(newCustomerName,
+                newOrderState, productType, newOrderArea);
     }
 
     @Override
@@ -76,9 +68,17 @@ public class ServiceLayerImpl implements ServiceLayer {
     }
 
     @Override
-    public void editOrder(LocalDate orderDate, Order editedOrder)
-            throws PersistenceException {
-        ORDER_DAO.editOrder(orderDate, editedOrder);
+    public Order createEditedOrder(Order orderToEdit, String newName,
+                                   String newState, String newProductType,
+                                   BigDecimal newArea) throws PersistenceException {
+        return ORDER_DAO.createEditedOrder(orderToEdit, newName, newState,
+                newProductType, newArea);
+    }
+
+    @Override
+    public void editOrder(LocalDate orderDate, Order orderToEdit,
+                          Order editedOrder) throws PersistenceException {
+        ORDER_DAO.editOrder(orderDate, orderToEdit, editedOrder);
         // Audit Entry
     }
 
@@ -102,8 +102,7 @@ public class ServiceLayerImpl implements ServiceLayer {
     }
 
     @Override
-    public List<String> getStateNameList() throws PersistenceException,
-            TaxFileNotFoundException {
+    public List<String> getStateNameList() throws TaxFileNotFoundException {
         try {
             return STATE_DAO.getStateNameList();
         } catch (PersistenceException e) {
@@ -112,8 +111,7 @@ public class ServiceLayerImpl implements ServiceLayer {
     }
 
     @Override
-    public List<String> getStateAbbrList() throws PersistenceException,
-            TaxFileNotFoundException {
+    public List<String> getStateAbbrList() throws TaxFileNotFoundException {
         try {
             return STATE_DAO.getStateAbbrList();
         } catch (PersistenceException e) {
@@ -122,8 +120,7 @@ public class ServiceLayerImpl implements ServiceLayer {
     }
 
     @Override
-    public List<Product> getProductList() throws PersistenceException,
-            ProductFileNotFoundException {
+    public List<Product> getProductList() throws ProductFileNotFoundException {
         try {
             return PRODUCT_DAO.getAllProducts();
         } catch (PersistenceException e) {
@@ -132,8 +129,7 @@ public class ServiceLayerImpl implements ServiceLayer {
     }
 
     @Override
-    public List<String> getProductTypeList() throws PersistenceException,
-            ProductFileNotFoundException {
+    public List<String> getProductTypeList() throws ProductFileNotFoundException {
         try {
             return PRODUCT_DAO.getProductTypeList();
         } catch (PersistenceException e) {

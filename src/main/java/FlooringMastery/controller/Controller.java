@@ -41,9 +41,9 @@ public class Controller {
                     default -> view.displayUnknownCommand();
                 }
             }
-        } catch (PersistenceException | InvalidStateException |
-                 ProductFileNotFoundException | TaxFileNotFoundException |
-                 OrderNotFoundException | OrderFileNotFoundException e) {
+        } catch (PersistenceException | ProductFileNotFoundException |
+                 TaxFileNotFoundException | OrderNotFoundException |
+                 OrderFileNotFoundException e) {
             view.displayErrorMessage(e.getMessage());
         }
     }
@@ -58,7 +58,7 @@ public class Controller {
         }
     }
 
-    private void addOrder() throws PersistenceException, InvalidStateException,
+    private void addOrder() throws PersistenceException,
             ProductFileNotFoundException, TaxFileNotFoundException {
         try {
             view.displayAddOrderBanner();
@@ -80,8 +80,8 @@ public class Controller {
                 }
                 case 2 -> view.orderDiscardedMsg();
             }
-        } catch (PersistenceException | InvalidStateException |
-                 ProductFileNotFoundException | TaxFileNotFoundException e) {
+        } catch (PersistenceException | ProductFileNotFoundException |
+                 TaxFileNotFoundException e) {
             view.displayErrorMessage(e.getMessage());
         }
     }
@@ -92,37 +92,38 @@ public class Controller {
             int orderNum = view.readOrderNumToEdit();
             Order orderToEdit = serviceLayer.getOrder(orderNum, orderDate);
 
-            String newCustomerName =
-                    view.editOrderCustomerName(orderToEdit.getCustomerName());
+            if (orderToEdit == null)
+                view.displayNullOrderMsg();
+            else {
+                String newCustomerName =
+                        view.editOrderCustomerName(orderToEdit.getCustomerName());
 
-            String newState = view.editOrderState(orderToEdit.getState(),
-                    serviceLayer.getStateNameList());
+                String newState = view.editOrderState(orderToEdit.getState(),
+                        serviceLayer.getStateNameList());
 
-            String newProductType = view.editOrderProductType(
-                    orderToEdit.getProductType(), serviceLayer.getProductList(),
-                    serviceLayer.getProductTypeList());
+                String newProductType = view.editOrderProductType(
+                        orderToEdit.getProductType(), serviceLayer.getProductList(),
+                        serviceLayer.getProductTypeList());
 
-            BigDecimal newOrderArea = view.editOrderArea(orderToEdit.getArea());
+                BigDecimal newOrderArea = view.editOrderArea(orderToEdit.getArea());
 
-            Order editedOrder = new Order(newCustomerName, newState,
-                    newProductType, newOrderArea);
+                Order editedOrder = serviceLayer.createEditedOrder(orderToEdit,
+                        newCustomerName, newState, newProductType, newOrderArea);
 
-            if (orderToEdit.getCustomerName().equals(editedOrder.getCustomerName())
-                    && orderToEdit.getState().equals(editedOrder.getState())
-                    && orderToEdit.getProductType().equals(editedOrder.getProductType())
-                    && orderToEdit.getArea().equals(editedOrder.getArea())) {
-                view.displayNoInfoChangedMsg();
-                return;
-            }
-
-            int confirmEditOrder = view.confirmEditOrder(editedOrder);
-
-            switch (confirmEditOrder) {
-                case 1 -> {
-                    serviceLayer.editOrder(orderDate, editedOrder);
-                    view.editSuccessMsg();
+                if (orderToEdit.equals(editedOrder)) {
+                    view.displayNoInfoChangedMsg();
+                    return;
                 }
-                case 2 -> view.editDiscardedMsg();
+
+                int confirmEditOrder = view.confirmEditOrder(orderToEdit, editedOrder);
+
+                switch (confirmEditOrder) {
+                    case 1 -> {
+                        serviceLayer.editOrder(orderDate, orderToEdit, editedOrder);
+                        view.editSuccessMsg();
+                    }
+                    case 2 -> view.editDiscardedMsg();
+                }
             }
 
         } catch (PersistenceException | OrderNotFoundException |
