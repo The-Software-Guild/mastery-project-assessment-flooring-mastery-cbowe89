@@ -33,6 +33,7 @@ public class FileDaoImpl implements FileDao {
     public List<Product> readProductFile(String fileName)
             throws PersistenceException {
         List<Product> productList = new ArrayList<>();
+        boolean skipFirstLine = true;
 
         Scanner sc;
 
@@ -44,8 +45,13 @@ public class FileDaoImpl implements FileDao {
 
             while (sc.hasNextLine()) {
                 currentLine = sc.nextLine();
-                currentProduct = unmarshallProduct(currentLine);
-                productList.add(currentProduct);
+
+                if (skipFirstLine)
+                    skipFirstLine = false;
+                else {
+                    currentProduct = unmarshallProduct(currentLine);
+                    productList.add(currentProduct);
+                }
             }
         } catch (FileNotFoundException e) {
             throw new PersistenceException("Product file not found.", e);
@@ -70,25 +76,30 @@ public class FileDaoImpl implements FileDao {
     public List<State> readTaxFile(String fileName)
             throws PersistenceException {
         List<State> stateList = new ArrayList<>();
+        boolean skipFirstLine = true;
 
         Scanner sc;
 
         try {
             sc = new Scanner(new BufferedReader(new FileReader(fileName)));
+            String currentLine;
+            State currentState;
+
+            while (sc.hasNextLine()) {
+                currentLine = sc.nextLine();
+
+                if (skipFirstLine)
+                    skipFirstLine = false;
+                else {
+                    currentState = unmarshallTaxes(currentLine);
+                    stateList.add(currentState);
+                }
+            }
+
+            sc.close();
         } catch (FileNotFoundException e) {
             throw new PersistenceException("Tax file not found.", e);
         }
-
-        String currentLine;
-        State currentState;
-
-        while (sc.hasNextLine()) {
-            currentLine = sc.nextLine();
-            currentState = unmarshallTaxes(currentLine);
-            stateList.add(currentState);
-        }
-
-        sc.close();
 
         return stateList;
     }

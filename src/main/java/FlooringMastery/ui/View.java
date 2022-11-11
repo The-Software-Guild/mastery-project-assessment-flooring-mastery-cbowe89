@@ -171,7 +171,19 @@ public class View {
 
         String newArea = io.readString("Type new Area or press " +
                 "Enter to leave unchanged.");
-        while (!newArea.equals("") ||)
+        if (newArea.equals(""))
+            return oldArea;
+
+        //!newArea.equals("") ||
+        while (new BigDecimal(newArea).compareTo(BigDecimal.valueOf(100)) < 0) {
+            newArea = io.readString("Invalid entry! Enter a sq ft amount "
+                    + "of at least 100 or press Enter to leave unchanged.");
+
+            if (newArea.equals(""))
+                return oldArea;
+        }
+
+        return new BigDecimal(newArea);
     }
 
     public void displayNoInfoChangedMsg() {
