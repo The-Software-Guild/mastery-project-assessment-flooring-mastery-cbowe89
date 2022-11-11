@@ -78,7 +78,7 @@ public class ServiceLayerImpl implements ServiceLayer {
     @Override
     public void editOrder(LocalDate orderDate, Order orderToEdit,
                           Order editedOrder) throws PersistenceException {
-        ORDER_DAO.editOrder(orderDate, orderToEdit, editedOrder);
+        ORDER_DAO.writeEditOrder(orderDate, orderToEdit, editedOrder);
         // Audit Entry
     }
 

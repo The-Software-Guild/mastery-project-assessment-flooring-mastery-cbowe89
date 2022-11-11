@@ -24,7 +24,7 @@ public interface OrderDao {
                             String newState, String newProductType,
                             BigDecimal newArea) throws PersistenceException;
 
-    void editOrder(LocalDate orderDate, Order orderToEdit, Order editedOrder)
+    void writeEditOrder(LocalDate orderDate, Order orderToEdit, Order editedOrder)
             throws PersistenceException;
 
     void removeOrder(LocalDate orderDate, Order order)

@@ -9,10 +9,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 public class OrderDaoImpl implements OrderDao {
     private final String ORDER_FILE;
@@ -111,9 +108,11 @@ public class OrderDaoImpl implements OrderDao {
     }
 
     @Override
-    public void editOrder(LocalDate orderDate, Order orderToEdit, Order editedOrder)
+    public void writeEditOrder(LocalDate orderDate, Order orderToEdit, Order editedOrder)
             throws PersistenceException {
-        FILE_DAO.writeEditOrder(orderToEdit,editedOrder, orderDate);
+        List<Order> orderList = getAllOrders(orderDate);
+        orderList.replaceAll(order -> order == orderToEdit ? editedOrder : order);
+        FILE_DAO.writeEditOrder(orderDate, orderList);
     }
 
     @Override

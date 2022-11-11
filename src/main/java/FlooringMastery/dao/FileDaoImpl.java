@@ -191,40 +191,36 @@ public class FileDaoImpl implements FileDao {
     }
 
     @Override
-    public void writeEditOrder(Order originalOrder, Order editedOrder,
-                               LocalDate date) throws PersistenceException {
-        String originalOrderAsString = marshallOrder(originalOrder);
-        String editedOrderAsString = marshallOrder(editedOrder);
-        String filePath = "Orders/Orders_" + date + ".txt";
+    public void writeEditOrder(LocalDate date, List<Order> orderList)
+            throws PersistenceException {
+        PrintWriter out;
 
-        File fileToEdit = new File(filePath);
-        StringBuilder oldContent = new StringBuilder();
-        BufferedReader bufferedReader;
-        FileWriter fileWriter;
+        String formattedDate = date.format(DateTimeFormatter.ofPattern("MMddyyyy"));
+        String fileName = String.format("Orders/Orders_%s.txt", formattedDate);
 
         try {
-            bufferedReader = new BufferedReader(new FileReader(fileToEdit));
+            // Initialize PrintWriter object
+            out = new PrintWriter(new FileWriter(fileName, false));
 
-            String line = bufferedReader.readLine();
+            out.println("OrderNumber,CustomerName,State,TaxRate,ProductType," +
+                    "Area,CostPerSquareFoot,LaborCostPerSquareFoot,MaterialCost," +
+                    "LaborCost,Tax,Total");
 
-            while (line != null) {
-                oldContent.append(line).append(System.lineSeparator());
-                line = bufferedReader.readLine();
+            String orderAsText;
+
+            for (Order order : orderList) {
+                // Marshall the current order file
+                orderAsText = marshallOrder(order);
+                // Write current file to DataExport file
+                out.println(orderAsText);
+                // Flush stream
+                out.flush();
             }
-
-            String newContent = oldContent.toString().replaceAll(originalOrderAsString,
-                    editedOrderAsString);
-
-            fileWriter = new FileWriter(filePath);
-
-            fileWriter.write(newContent);
-
-            bufferedReader.close();
-            fileWriter.close();
         } catch (IOException e) {
             throw new PersistenceException("Could not persist order edit.", e);
         }
 
+        out.close();
     }
 
     @Override
