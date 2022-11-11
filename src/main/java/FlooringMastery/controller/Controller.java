@@ -115,7 +115,7 @@ public class Controller {
                 return;
             }
 
-            int confirmEditOrder = view.confirmEditOrder();
+            int confirmEditOrder = view.confirmEditOrder(editedOrder);
 
             switch (confirmEditOrder) {
                 case 1 -> {

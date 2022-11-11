@@ -174,7 +174,6 @@ public class View {
         if (newArea.equals(""))
             return oldArea;
 
-        //!newArea.equals("") ||
         while (new BigDecimal(newArea).compareTo(BigDecimal.valueOf(100)) < 0) {
             newArea = io.readString("Invalid entry! Enter a sq ft amount "
                     + "of at least 100 or press Enter to leave unchanged.");
@@ -191,7 +190,8 @@ public class View {
         continueMessage();
     }
 
-    public int confirmEditOrder() {
+    public int confirmEditOrder(Order editedOrder) {
+        io.print(editedOrder.toString());
         return io.readInt("Do you want to save the edited Order?" +
                 " Enter 1 for Yes or 2 for No.", 1, 2);
     }
@@ -267,6 +267,4 @@ public class View {
     public void continueMessage() {
         io.readString("Press Enter to Continue...");
     }
-
-
 }
