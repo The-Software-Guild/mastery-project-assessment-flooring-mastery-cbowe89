@@ -3,8 +3,6 @@ package FlooringMastery.controller;
 import FlooringMastery.dao.PersistenceException;
 import FlooringMastery.model.Order;
 import FlooringMastery.service.*;
-import FlooringMastery.ui.UserIO;
-import FlooringMastery.ui.UserIOConsoleImpl;
 import FlooringMastery.ui.View;
 
 import java.math.BigDecimal;
@@ -14,12 +12,6 @@ import java.util.List;
 public class Controller {
     private final View view;
     private final ServiceLayer serviceLayer;
-
-    public Controller() {
-        UserIO io = new UserIOConsoleImpl();
-        view = new View(io);
-        serviceLayer = new ServiceLayerImpl();
-    }
 
     public Controller(View view, ServiceLayer serviceLayer) {
         this.view = view;
