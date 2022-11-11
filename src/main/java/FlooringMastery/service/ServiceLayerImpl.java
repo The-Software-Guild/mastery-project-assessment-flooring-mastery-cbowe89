@@ -77,6 +77,11 @@ public class ServiceLayerImpl implements ServiceLayer {
     }
 
     @Override
+    public void removeOrder(LocalDate orderDate, Order orderToRemove) {
+
+    }
+
+    @Override
     public void exportAllOrders() throws PersistenceException {
         String exportFile = "Backup/DataExport.txt";
         ORDER_DAO.exportAllData(exportFile);
@@ -92,26 +97,17 @@ public class ServiceLayerImpl implements ServiceLayer {
     public List<String> getStateNameList() throws PersistenceException,
             TaxFileNotFoundException {
         try {
-            List<State> stateInfoList = getStateInfoList();
-            List<String> stateNameList = new ArrayList<>();
-            for (State state : stateInfoList)
-                stateNameList.add(state.getStateName());
-            return stateNameList;
+            return STATE_DAO.getStateNameList();
         } catch (PersistenceException e) {
             throw new TaxFileNotFoundException("Could not retrieve State/Tax data.");
         }
-
     }
 
     @Override
     public List<String> getStateAbbrList() throws PersistenceException,
             TaxFileNotFoundException {
         try {
-            List<State> stateInfoList = getStateInfoList();
-            List<String> stateAbbrList = new ArrayList<>();
-            for (State state : stateInfoList)
-                stateAbbrList.add(state.getStateAbbr());
-            return stateAbbrList;
+            return STATE_DAO.getStateAbbrList();
         } catch (PersistenceException e) {
             throw new TaxFileNotFoundException("Could not retrieve State/Tax data.");
         }

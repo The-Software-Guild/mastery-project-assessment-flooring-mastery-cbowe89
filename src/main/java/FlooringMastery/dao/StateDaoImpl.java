@@ -21,7 +21,7 @@ public class StateDaoImpl implements StateDao {
     }
 
     @Override
-    public List<String> getStateNamesList() throws PersistenceException {
+    public List<String> getStateNameList() throws PersistenceException {
         List<State> stateInfoList = getStateInfoList();
         List<String> stateNameList = new ArrayList<>();
         for (State state : stateInfoList)

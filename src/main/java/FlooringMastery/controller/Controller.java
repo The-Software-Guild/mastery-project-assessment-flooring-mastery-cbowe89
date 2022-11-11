@@ -49,46 +49,48 @@ public class Controller {
                     default -> view.displayUnknownCommand();
                 }
             }
-        } catch (PersistenceException | InvalidStateException e) {
+        } catch (PersistenceException | InvalidStateException |
+                 OrderNotFoundException | ProductFileNotFoundException |
+                 TaxFileNotFoundException e) {
             view.displayErrorMessage(e.getMessage());
-        } catch (OrderNotFoundException | ProductFileNotFoundException e) {
-            throw new RuntimeException(e);
         }
     }
 
     private void displayOrders() throws PersistenceException {
-        view.displayAllBanner();
-        LocalDate dateEntered = view.getDateToDisplay();
-
         try {
+            LocalDate dateEntered = view.getDateToDisplay();
             List<Order> ordersForDateEntered = serviceLayer.getAllOrders(dateEntered);
             view.displayOrdersForDate(ordersForDateEntered);
-            view.continueMessage();
         } catch (OrderFileNotFoundException e) {
             view.displayErrorMessage(e.getMessage());
         }
     }
 
     private void addOrder() throws PersistenceException, InvalidStateException,
-            ProductFileNotFoundException {
-        view.displayAddOrderBanner();
-        LocalDate newOrderDate = view.getNewOrderDate();
-        String newCustomerName = view.getNewCustomerName();
-        String newOrderState = view.getNewOrderState();
-        String productType = view.getProductType(serviceLayer.getProductList());
-        BigDecimal newOrderArea = view.getNewOrderArea();
+            ProductFileNotFoundException, TaxFileNotFoundException {
+        try {
+            view.displayAddOrderBanner();
+            LocalDate newOrderDate = view.getNewOrderDate();
+            String newCustomerName = view.getNewCustomerName();
+            String newOrderState = view.getNewOrderState(serviceLayer.getStateNameList());
+            String productType = view.getProductType(serviceLayer.getProductList());
+            BigDecimal newOrderArea = view.getNewOrderArea();
 
-        Order newOrder = serviceLayer.createNewOrder(newCustomerName,
-                newOrderState, productType, newOrderArea);
+            Order newOrder = serviceLayer.createNewOrder(newCustomerName,
+                    newOrderState, productType, newOrderArea);
 
-        int confirmAddOrder = view.confirmPlaceNewOrder(newOrder);
+            int confirmAddOrder = view.confirmPlaceNewOrder(newOrder);
 
-        switch (confirmAddOrder) {
-            case 1 -> {
-                serviceLayer.addNewOrder(newOrderDate, newOrder);
-                view.orderPlacedSuccessMsg();
+            switch (confirmAddOrder) {
+                case 1 -> {
+                    serviceLayer.addNewOrder(newOrderDate, newOrder);
+                    view.orderPlacedSuccessMsg();
+                }
+                case 2 -> view.orderDiscardedMsg();
             }
-            case 2 -> view.orderDiscardedMsg();
+        } catch (PersistenceException | InvalidStateException |
+                 ProductFileNotFoundException | TaxFileNotFoundException e) {
+            view.displayErrorMessage(e.getMessage());
         }
     }
 
@@ -96,26 +98,37 @@ public class Controller {
     }
 
     private void removeOrder() throws PersistenceException, OrderNotFoundException {
-        LocalDate orderDate = view.getDateToRemove();
-        int orderNum = view.readOrderNumToRemoved();
-        Order orderToRemove = serviceLayer.getOrder(orderNum, orderDate);
+        try {
+            LocalDate orderDate = view.getDateToRemove();
+            int orderNum = view.readOrderNumToRemoved();
+            Order orderToRemove = serviceLayer.getOrder(orderNum, orderDate);
 
-        int confirmRemove = view.confirmRemoveOrder(orderToRemove);
-        switch (confirmRemove) {
-            case 1 -> ;
-            case 2 -> ;
+            int confirmRemove = view.confirmRemoveOrder(orderToRemove);
+            switch (confirmRemove) {
+                case 1 -> {
+                    serviceLayer.removeOrder(orderDate, orderToRemove);
+                    view.orderRemovedSuccessMsg();
+                }
+                case 2 -> view.removeOrderDisregardMsg();
+            }
+        } catch (PersistenceException | OrderNotFoundException e) {
+            view.displayErrorMessage(e.getMessage());
         }
     }
 
     private void exportAllData() throws PersistenceException {
-        view.displayExportBanner();
-        int exportYorN = view.getExportConfirmation();
-        switch (exportYorN) {
-            case 1 -> {
-                serviceLayer.exportAllOrders();
-                view.displayExportSuccessMsg();
+        try {
+            view.displayExportBanner();
+            int exportYorN = view.getExportConfirmation();
+            switch (exportYorN) {
+                case 1 -> {
+                    serviceLayer.exportAllOrders();
+                    view.displayExportSuccessMsg();
+                }
+                case 2 -> view.skipExportMessage();
             }
-            case 2 -> view.skipExportMessage();
+        } catch (PersistenceException e) {
+            view.displayErrorMessage(e.getMessage());
         }
     }
 

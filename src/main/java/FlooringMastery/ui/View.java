@@ -33,11 +33,8 @@ public class View {
         return io.readInt("Please selection an option.", 1, 6);
     }
 
-    public void displayAllBanner() {
-        io.print("\n----- Display All Orders For A Date -----");
-    }
-
     public LocalDate getDateToDisplay() {
+        io.print("\n----- Display All Orders For A Date -----");
         return io.readDate("Enter a date to display orders. (MMDDYYYY)");
     }
 
@@ -45,6 +42,7 @@ public class View {
         for (Order order : allOrders) {
             io.print(order.toString());
         }
+        continueMessage();
     }
 
     public void displayAddOrderBanner() {
@@ -60,8 +58,14 @@ public class View {
         return io.readString("Enter a Customer Name for the new order.");
     }
 
-    public String getNewOrderState() {
-        return io.readString("Enter a State Name for the new order.");
+    public String getNewOrderState(List<String> stateNameList) {
+        String stateName =  io.readString("Enter a State Name for the new order.");
+
+        while (!stateNameList.contains(stateName)) {
+            stateName = io.readString("Invalid entry! Enter a valid State name.");
+        }
+
+        return stateName;
     }
 
     public String getProductType(List<Product> productList) {
@@ -102,7 +106,13 @@ public class View {
         continueMessage();
     }
 
+    public LocalDate getDateToEdit() {
+        return io.readDate("Enter a date for the Order to be edited. (MMDDYYYY)");
+    }
 
+    public int readOrderNumToEdit() {
+        return io.readInt("Enter the Order # you with to edit.");
+    }
 
 
 
@@ -118,6 +128,16 @@ public class View {
         io.print(order.toString());
         return io.readInt("Would you like to delete this order?" +
                 " Enter 1 for YES or 2 for NO.", 1, 2);
+    }
+
+    public void orderRemovedSuccessMsg() {
+        io.print("Order removed successfully!");
+        continueMessage();
+    }
+
+    public void removeOrderDisregardMsg() {
+        io.print("Remove cancelled! Order was not removed.");
+        continueMessage();
     }
 
     public void displayExportBanner() {

@@ -23,6 +23,8 @@ public interface ServiceLayer {
     void addNewOrder(LocalDate newOrderDate, Order newOrder)
             throws PersistenceException;
 
+    void removeOrder(LocalDate orderDate, Order orderToRemove);
+
     void exportAllOrders() throws PersistenceException;
 
     List<State> getStateInfoList() throws PersistenceException;

@@ -9,7 +9,7 @@ import java.util.Map;
 public interface StateDao {
     List<State> getStateInfoList() throws PersistenceException;
 
-    List<String> getStateNamesList() throws PersistenceException;
+    List<String> getStateNameList() throws PersistenceException;
 
     List<String> getStateAbbrList() throws PersistenceException;
 
