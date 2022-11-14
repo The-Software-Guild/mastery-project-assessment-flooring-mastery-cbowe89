@@ -112,9 +112,7 @@ public class OrderDaoImpl implements OrderDao {
     @Override
     public void writeEditOrder(LocalDate orderDate, Order orderToEdit, Order editedOrder)
             throws PersistenceException {
-        List<Order> orderList = getAllOrders(orderDate);
-        orderList.replaceAll(order -> order == orderToEdit ? editedOrder : order);
-        FILE_DAO.writeEditOrder(orderDate, orderList);
+        FILE_DAO.writeEditOrder(orderDate, orderToEdit, editedOrder);
     }
 
     @Override

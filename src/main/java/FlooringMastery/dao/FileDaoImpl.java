@@ -191,8 +191,9 @@ public class FileDaoImpl implements FileDao {
     }
 
     @Override
-    public void writeEditOrder(LocalDate date, List<Order> orderList)
+    public void writeEditOrder(LocalDate date, Order orderToEdit, Order editedOrder)
             throws PersistenceException {
+        Scanner sc;
         PrintWriter out;
 
         String formattedDate = date.format(DateTimeFormatter.ofPattern("MMddyyyy"));
@@ -200,27 +201,31 @@ public class FileDaoImpl implements FileDao {
 
         try {
             // Initialize PrintWriter object
-            out = new PrintWriter(new FileWriter(fileName, false));
+            sc = new Scanner(new File(fileName));
 
-            out.println("OrderNumber,CustomerName,State,TaxRate,ProductType," +
-                    "Area,CostPerSquareFoot,LaborCostPerSquareFoot,MaterialCost," +
-                    "LaborCost,Tax,Total");
+            StringBuffer buffer = new StringBuffer();
 
-            String orderAsText;
+            while (sc.hasNextLine())
+                buffer.append(sc.nextLine() + System.lineSeparator());
 
-            for (Order order : orderList) {
-                // Marshall the current order file
-                orderAsText = marshallOrder(order);
-                // Write current file to DataExport file
-                out.println(orderAsText);
-                // Flush stream
-                out.flush();
-            }
+
+            String fileContents = buffer.toString();
+
+            sc.close();
+
+            String oldOrderAsText = marshallOrder(orderToEdit);
+            String editedOrderAsText = marshallOrder(editedOrder);
+
+            fileContents = fileContents.replaceAll(oldOrderAsText, editedOrderAsText);
+
+            out = new PrintWriter(new FileWriter(fileName));
+
+            out.print(fileContents);
+
+            out.flush();
         } catch (IOException e) {
             throw new PersistenceException("Could not persist order edit.", e);
         }
-
-        out.close();
     }
 
     @Override

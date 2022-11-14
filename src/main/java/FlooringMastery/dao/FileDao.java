@@ -28,7 +28,7 @@ public interface FileDao {
     void writeNewOrder(LocalDate date, Order order) throws
             PersistenceException;
 
-    void writeEditOrder(LocalDate date, List<Order> orderList)
+    void writeEditOrder(LocalDate date, Order orderToEdit, Order editedOrder)
             throws PersistenceException;
 
     String marshallOrderForExport(Order order, String date);
