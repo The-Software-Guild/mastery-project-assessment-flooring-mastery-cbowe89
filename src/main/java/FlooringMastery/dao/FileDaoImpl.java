@@ -74,7 +74,6 @@ public class FileDaoImpl implements FileDao {
 
             while (sc.hasNextLine()) {
                 currentLine = sc.nextLine();
-
                 if (skipFirstLine)
                     // Skip first line which is header row
                     skipFirstLine = false;
@@ -149,14 +148,13 @@ public class FileDaoImpl implements FileDao {
 
             while (sc.hasNextLine()) {
                 currentLine = sc.nextLine();
-
                 if (skipFirstLine)
                     // Skip first line which is header row
                     skipFirstLine = false;
                 else {
                     // Unmarshall currentLine, create new State object
                     currentState = unmarshallTaxes(currentLine);
-                    // Add new Product object to productList
+                    // Add new State object to stateList
                     stateList.add(currentState);
                 }
             }
@@ -227,33 +225,47 @@ public class FileDaoImpl implements FileDao {
         // Create new File instance
         File file = new File(String.format("Orders/Orders_%s.txt", formattedDate));
 
-            try {
-                if(file.isFile()) {
-                    sc = new Scanner(new BufferedReader(new FileReader(file)));
+        try {
+            // Initialize Scanner object
+            sc = new Scanner(new BufferedReader(new FileReader(file)));
 
-                    String currentLine;
-                    Order currentOrder;
+            String currentLine; // To hold currentLine while reading file
+            Order currentOrder; // To hold Order object from currentLine
 
-                    while (sc.hasNextLine()) {
-                        currentLine = sc.nextLine();
-                        if (skipFirstLine) {
-                            skipFirstLine = false;
-                        } else {
-                            currentOrder = unmarshallOrder(currentLine);
-                            orderList.add(currentOrder);
-                        }
-                    }
-                    sc.close();
+            while (sc.hasNextLine()) {
+                currentLine = sc.nextLine();
+                if (skipFirstLine) {
+                    // Skip first line which is header row
+                    skipFirstLine = false;
+                } else {
+                    // Unmarshall currentLine, create new Order object
+                    currentOrder = unmarshallOrder(currentLine);
+                    // Add new Order object to orderList
+                    orderList.add(currentOrder);
                 }
-
-                return orderList;
-            } catch (FileNotFoundException e) {
-                throw new PersistenceException("Order file for date not found.", e);
             }
+
+            // Close Scanner object
+            sc.close();
+
+            // Return list of Order objects
+            return orderList;
+        } catch (FileNotFoundException e) {
+            // Throw exception if unable to find order file
+            throw new PersistenceException("Order file for date not found.", e);
+        }
     }
 
+    /**
+     * Converts an order to the appropriate String with delimiters needed
+     * to store in Order file
+     * @param order order to store in file
+     * @return Order as string, formatted for storing in an Order File
+     */
     @Override
     public String marshallOrder(Order order) {
+        // Create and return a string of all order properties, with each property
+        // separated with delimiters
         return order.getOrderNumber() + DELIMITER + order.getCustomerName()
                 + DELIMITER + order.getState() + DELIMITER + order.getTaxRate()
                 + DELIMITER + order.getProductType() + DELIMITER + order.getArea()
@@ -263,17 +275,30 @@ public class FileDaoImpl implements FileDao {
                 + DELIMITER + order.getTotal();
     }
 
+    /**
+     * Writes order to appropriate file based on the Order date. If no
+     * file exists for the date, a new file is created in the Orders directory.
+     * @param date date of Order
+     * @param order Order to write to file
+     * @throws PersistenceException if unable to write Order to file
+     */
     @Override
     public void writeNewOrder(LocalDate date, Order order)
             throws PersistenceException {
+        // Declare PrintWriter object
         PrintWriter out;
 
+        // Create string to ensure date is properly formatted
         String formattedDate = date.format(DateTimeFormatter.ofPattern("MMddyyyy"));
+        // Create new instance of File
         File file = new File(String.format("Orders/Orders_%s.txt", formattedDate));
 
         try {
+            // Initialize PrintWriter object
             out = new PrintWriter(new FileWriter((file), true));
 
+            // If File length is 0, there was no previous file for the date
+            // Add header row to file
             if (file.length() == 0) {
                 out.println("OrderNumber,CustomerName,State,TaxRate,ProductType," +
                         "Area,CostPerSquareFoot,LaborCostPerSquareFoot," +
@@ -287,17 +312,27 @@ public class FileDaoImpl implements FileDao {
             // Close PrintWriter object
             out.close();
         } catch (IOException e) {
-            throw new PersistenceException(
-                    "Could not persist order information.", e);
+            // Throw exception if unable to write to Order file
+            throw new PersistenceException("Could not write Order information.", e);
         }
     }
 
+    /**
+     * Edits order information in the appropriate file based on Order date.
+     * @param date date of Order
+     * @param orderToEdit Order that was edited
+     * @param editedOrder Edited version of Order
+     * @throws PersistenceException if unable to write Order to file
+     */
     @Override
     public void writeEditOrder(LocalDate date, Order orderToEdit, Order editedOrder)
             throws PersistenceException {
+        // Declare Scanner, PrintWriter, and StringBuilder objects
         Scanner sc;
         PrintWriter out;
+        StringBuilder builder;
 
+        // Ensure correct format of date, save as String, and create fileName String
         String formattedDate = date.format(DateTimeFormatter.ofPattern("MMddyyyy"));
         String fileName = String.format("Orders/Orders_%s.txt", formattedDate);
 
@@ -305,29 +340,47 @@ public class FileDaoImpl implements FileDao {
             // Initialize PrintWriter object
             sc = new Scanner(new File(fileName));
 
-            StringBuilder builder = new StringBuilder();
+            // Initialize new StringBuilder object
+            builder = new StringBuilder();
 
+            // Append all lines from Order file to StringBuilder
             while (sc.hasNextLine())
                 builder.append(sc.nextLine()).append(System.lineSeparator());
 
-
+            // Convert StringBuilder to String
             String fileContents = builder.toString();
 
+            // Close Scanner object
             sc.close();
 
+            // Replace original order information with the edited information
+            // in the fileContents String
             fileContents = fileContents.replaceAll(marshallOrder(orderToEdit),
                     marshallOrder(editedOrder));
 
+            // Initialize PrintWriter object
             out = new PrintWriter(new FileWriter(fileName));
 
+            // Write fileContents String to the File
+            // Will replace all contents of the file
             out.print(fileContents);
 
+            // Flush stream
             out.flush();
+            // Close PrintWriter object
+            out.close();
         } catch (IOException e) {
-            throw new PersistenceException("Could not persist order edit.", e);
+            // Throw exception if unable to edit Order in file
+            throw new PersistenceException("Could not edit Order in file.", e);
         }
     }
 
+    /**
+     * Removes an Order from the appropriate Order File based on Order Date
+     * @param date date of Order
+     * @param orderToRemove Order object to remove from file
+     * @throws PersistenceException if unable to remove Order
+     */
     @Override
     public void removeOrderFromFile(LocalDate date, Order orderToRemove)
             throws PersistenceException {
@@ -365,11 +418,21 @@ public class FileDaoImpl implements FileDao {
 
             // Flush stream
             out.flush();
+            // Close PrintWriter object
+            out.close();
         } catch (IOException e) {
-            throw new PersistenceException("Could not persist order edit.", e);
+            // Throw exception if unable to remove Order from file
+            throw new PersistenceException("Could not remove Order from file.", e);
         }
     }
 
+    /**
+     * Converts an order to the appropriate String with delimiters, including
+     * Order date, to store in Export file
+     * @param order Order to write in export file
+     * @param date date of Order
+     * @return Order as string, formatted for storing in Export File
+     */
     @Override
     public String marshallOrderForExport(Order order, String date) {
         return order.getOrderNumber() + DELIMITER + order.getCustomerName()
@@ -381,20 +444,29 @@ public class FileDaoImpl implements FileDao {
                 + DELIMITER + order.getTotal() + DELIMITER + date;
     }
 
+    /**
+     * Reads all Order Files, writes all Order information with the Order date
+     * to the Export File
+     * @param exportFile path/name of Export File
+     * @throws PersistenceException if unable to Export all Order data
+     */
     @Override
     public void exportAllData(String exportFile)
             throws PersistenceException {
-        PrintWriter out; // Declare PrintWriter object
+        // Declare PrintWriter object
+        PrintWriter out;
 
+        // Declare and initialize DateTimeFormatter object
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("MMddyyyy");
 
-        // Create File object for directory
+        // Create File object for directory where Order files are located
         File directoryPath = new File("Orders");
 
         // Declare and initialize list with names of all order files
         List<String> orderFileNames =
                 List.of(Objects.requireNonNull(directoryPath.list()));
 
+        // Declare list to store Orders
         List<Order> orderList;
 
         try {
@@ -409,9 +481,10 @@ public class FileDaoImpl implements FileDao {
                 // Set dateString to date of file
                 dateString = fileName.substring(7, 15);
 
+                // Declare and initialize LocalDate object from dateString and formatter
                 LocalDate localDate = LocalDate.parse(dateString, dateTimeFormatter);
 
-                // Read order file
+                // Read order file, store orders in list
                 orderList = readOrderFile(localDate);
 
                 // Iterate through individual order files
@@ -424,9 +497,11 @@ public class FileDaoImpl implements FileDao {
                     out.flush();
                 }
             }
-
+            // Close PrintWriter object
+            out.close();
         }catch (IOException e) {
-            throw new PersistenceException("Could not export data.", e);
+            // Throw exception if unable to export all orders
+            throw new PersistenceException("Could not export order data.", e);
         }
     }
 }
