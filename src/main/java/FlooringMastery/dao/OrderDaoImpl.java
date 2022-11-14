@@ -14,20 +14,48 @@ import java.util.*;
 public class OrderDaoImpl implements OrderDao {
     private final FileDao FILE_DAO;
 
+    /**
+     * No-args constructor for OrderDaoImpl creates a new instance
+     * of the FileDaoImpl.
+     */
     public OrderDaoImpl() {
         FILE_DAO = new FileDaoImpl();
     }
 
+    /**
+     * Retrieves Order information from an order file based on
+     * the parameters that the method receives.
+     * @param orderNumber number of Order to retrieve
+     * @param orderDate date of Order
+     * @return Order object with data from file
+     * @throws PersistenceException if unable to find Order based
+     * on the date and order number
+     */
     @Override
     public Order getOrder(int orderNumber, LocalDate orderDate)
             throws PersistenceException {
+        // Read order file for date entered and stored data in List
         List<Order> orderList = FILE_DAO.readOrderFile(orderDate);
+
+        // Declare and initialize HashMap to map Orders from file
         Map<Integer, Order> orderMap = new HashMap<>();
+
+        // Iterate through orderList putting each order into the map
+        // with key = orderNumber and value = Order object
         for (Order order : orderList)
             orderMap.put(order.getOrderNumber(), order);
+
+        // Get and return Order object from map based on order number
         return orderMap.get(orderNumber);
     }
 
+    /**
+     * Get all orders for the date passed to this method.
+     * @param dateEntered date to retrieve orders for
+     * @return list of Order objects
+     * @throws PersistenceException if unable to retrieve data for the
+     * date entered
+     */
     @Override
     public List<Order> getAllOrders(LocalDate dateEntered)
             throws PersistenceException {
