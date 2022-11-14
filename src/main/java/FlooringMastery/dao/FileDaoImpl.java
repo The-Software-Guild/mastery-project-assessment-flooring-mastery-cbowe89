@@ -176,9 +176,16 @@ public class FileDaoImpl implements FileDao {
 
         String formattedDate = date.format(DateTimeFormatter.ofPattern("MMddyyyy"));
         String fileName = String.format("Orders/Orders_%s.txt", formattedDate);
+        File file = new File(fileName);
 
         try {
-            out = new PrintWriter(new FileWriter((fileName), true));
+            out = new PrintWriter(new FileWriter((file), true));
+
+            if (file.length() == 0) {
+                out.println("OrderNumber,CustomerName,State,TaxRate,ProductType," +
+                        "Area,CostPerSquareFoot,LaborCostPerSquareFoot," +
+                        "MaterialCost,LaborCost,Tax,Total");
+            }
 
             // Write Order to file (appended to end of file)
             out.println(marshallOrder(order));
