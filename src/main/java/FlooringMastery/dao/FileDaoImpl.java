@@ -222,10 +222,41 @@ public class FileDaoImpl implements FileDao {
 
             sc.close();
 
-            String oldOrderAsText = marshallOrder(orderToEdit);
-            String editedOrderAsText = marshallOrder(editedOrder);
+            fileContents = fileContents.replaceAll(marshallOrder(orderToEdit),
+                    marshallOrder(editedOrder));
 
-            fileContents = fileContents.replaceAll(oldOrderAsText, editedOrderAsText);
+            out = new PrintWriter(new FileWriter(fileName));
+
+            out.print(fileContents);
+
+            out.flush();
+        } catch (IOException e) {
+            throw new PersistenceException("Could not persist order edit.", e);
+        }
+    }
+
+    @Override
+    public void removeOrderFromFile(LocalDate date, Order orderToRemove) throws PersistenceException {
+        Scanner sc;
+        PrintWriter out;
+
+        String formattedDate = date.format(DateTimeFormatter.ofPattern("MMddyyyy"));
+        String fileName = String.format("Orders/Orders_%s.txt", formattedDate);
+
+        try {
+            // Initialize PrintWriter object
+            sc = new Scanner(new File(fileName));
+
+            StringBuilder builder = new StringBuilder();
+
+            while (sc.hasNextLine())
+                builder.append(sc.nextLine()).append(System.lineSeparator());
+
+            String fileContents = builder.toString();
+
+            sc.close();
+
+            fileContents = fileContents.replaceAll(marshallOrder(orderToRemove), "");
 
             out = new PrintWriter(new FileWriter(fileName));
 

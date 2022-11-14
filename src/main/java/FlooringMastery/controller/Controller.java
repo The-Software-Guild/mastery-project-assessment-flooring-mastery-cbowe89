@@ -138,13 +138,17 @@ public class Controller {
             int orderNum = view.readOrderNumToRemoved();
             Order orderToRemove = serviceLayer.getOrder(orderNum, orderDate);
 
-            int confirmRemove = view.confirmRemoveOrder(orderToRemove);
-            switch (confirmRemove) {
-                case 1 -> {
-                    serviceLayer.removeOrder(orderDate, orderToRemove);
-                    view.orderRemovedSuccessMsg();
+            if (orderToRemove == null)
+                view.displayNullOrderMsg();
+            else {
+                int confirmRemove = view.confirmRemoveOrder(orderToRemove);
+                switch (confirmRemove) {
+                    case 1 -> {
+                        serviceLayer.removeOrder(orderDate, orderToRemove);
+                        view.orderRemovedSuccessMsg();
+                    }
+                    case 2 -> view.removeOrderDisregardMsg();
                 }
-                case 2 -> view.removeOrderDisregardMsg();
             }
         } catch (PersistenceException | OrderNotFoundException e) {
             view.displayErrorMessage(e.getMessage());

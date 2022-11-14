@@ -31,6 +31,8 @@ public interface FileDao {
     void writeEditOrder(LocalDate date, Order orderToEdit, Order editedOrder)
             throws PersistenceException;
 
+    void removeOrderFromFile(LocalDate date, Order orderToRemove) throws PersistenceException;
+
     String marshallOrderForExport(Order order, String date);
 
     void exportAllData(String exportFile)

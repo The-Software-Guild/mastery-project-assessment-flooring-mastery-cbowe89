@@ -116,9 +116,9 @@ public class OrderDaoImpl implements OrderDao {
     }
 
     @Override
-    public void removeOrder(LocalDate orderDate, Order order)
+    public void removeOrder(LocalDate orderDate, Order orderToRemove)
             throws PersistenceException {
-
+        FILE_DAO.removeOrderFromFile(orderDate, orderToRemove);
     }
 
     @Override
