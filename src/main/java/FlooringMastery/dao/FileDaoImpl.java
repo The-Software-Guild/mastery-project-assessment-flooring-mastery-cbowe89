@@ -256,7 +256,8 @@ public class FileDaoImpl implements FileDao {
 
             sc.close();
 
-            fileContents = fileContents.replaceAll(marshallOrder(orderToRemove), "");
+            fileContents = fileContents.replaceAll(marshallOrder(orderToRemove)
+                    .concat(System.lineSeparator()), "");
 
             out = new PrintWriter(new FileWriter(fileName));
 
