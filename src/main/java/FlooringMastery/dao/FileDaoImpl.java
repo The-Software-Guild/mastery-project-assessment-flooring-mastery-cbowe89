@@ -203,13 +203,13 @@ public class FileDaoImpl implements FileDao {
             // Initialize PrintWriter object
             sc = new Scanner(new File(fileName));
 
-            StringBuffer buffer = new StringBuffer();
+            StringBuilder builder = new StringBuilder();
 
             while (sc.hasNextLine())
-                buffer.append(sc.nextLine() + System.lineSeparator());
+                builder.append(sc.nextLine()).append(System.lineSeparator());
 
 
-            String fileContents = buffer.toString();
+            String fileContents = builder.toString();
 
             sc.close();
 
