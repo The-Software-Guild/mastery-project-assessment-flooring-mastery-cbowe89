@@ -46,7 +46,6 @@ public class OrderDaoImpl implements OrderDao {
                                 String productType, BigDecimal newOrderArea)
             throws PersistenceException {
         State state = getStateInfo(newOrderState);
-        String stateAbbr = state.getStateAbbr();
         BigDecimal taxRate = state.getTaxRate();
 
         Product product = getProductInfo(productType);
@@ -58,7 +57,9 @@ public class OrderDaoImpl implements OrderDao {
         BigDecimal tax = calculateTax(taxRate, materialCost, laborCost);
         BigDecimal total = calculateTotal(tax, materialCost, laborCost);
 
-        Order newOrder = new Order(newCustomerName, stateAbbr, productType, newOrderArea);
+        Order newOrder = new Order(newCustomerName, newOrderState,
+                productType, newOrderArea);
+
         newOrder.setOrderNumber(generateNewOrderNum());
         newOrder.setTaxRate(taxRate);
         newOrder.setCostPerSquareFoot(costPerSqFt);
@@ -79,10 +80,9 @@ public class OrderDaoImpl implements OrderDao {
 
     @Override
     public Order createEditedOrder(Order order, String newName,
-                                   String newState, String newProductType,
+                                   String newStateAbbr, String newProductType,
                                    BigDecimal newArea) throws PersistenceException {
-        State state = getStateInfo(newState);
-        String stateAbbr = state.getStateAbbr();
+        State state = getStateInfo(newStateAbbr);
         BigDecimal taxRate = state.getTaxRate();
 
         Product product = getProductInfo(newProductType);
@@ -94,7 +94,9 @@ public class OrderDaoImpl implements OrderDao {
         BigDecimal tax = calculateTax(taxRate, materialCost, laborCost);
         BigDecimal total = calculateTotal(tax, materialCost, laborCost);
 
-        Order editedOrder = new Order(newName, stateAbbr, newProductType, newArea);
+        Order editedOrder = new Order(newName, newStateAbbr,
+                newProductType, newArea);
+
         editedOrder.setOrderNumber(order.getOrderNumber());
         editedOrder.setTaxRate(taxRate);
         editedOrder.setCostPerSquareFoot(costPerSqFt);
@@ -126,9 +128,9 @@ public class OrderDaoImpl implements OrderDao {
         FILE_DAO.exportAllData(exportFile);
     }
 
-    private State getStateInfo(String stateName) throws PersistenceException {
+    private State getStateInfo(String stateAbbr) throws PersistenceException {
         List<State> stateList = FILE_DAO.readTaxFile("Data/Taxes.txt");
-        return stateList.stream().filter(s -> s.getStateName().equals(stateName))
+        return stateList.stream().filter(s -> s.getStateAbbr().equals(stateAbbr))
                 .findFirst().orElse(null);
     }
 

@@ -64,7 +64,7 @@ public class Controller {
             view.displayAddOrderBanner();
             LocalDate newOrderDate = view.getNewOrderDate();
             String newCustomerName = view.getNewCustomerName();
-            String newOrderState = view.getNewOrderState(serviceLayer.getStateNameList());
+            String newOrderState = view.getNewOrderState(serviceLayer.getStateAbbrList());
             String productType = view.getProductType(serviceLayer.getProductList());
             BigDecimal newOrderArea = view.getNewOrderArea();
 
@@ -99,7 +99,7 @@ public class Controller {
                         view.editOrderCustomerName(orderToEdit.getCustomerName());
 
                 String newState = view.editOrderState(orderToEdit.getState(),
-                        serviceLayer.getStateNameList());
+                        serviceLayer.getStateAbbrList());
 
                 String newProductType = view.editOrderProductType(
                         orderToEdit.getProductType(), serviceLayer.getProductList(),

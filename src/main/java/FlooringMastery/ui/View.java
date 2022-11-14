@@ -58,14 +58,16 @@ public class View {
         return io.readString("Enter a Customer Name for the new order.");
     }
 
-    public String getNewOrderState(List<String> stateNameList) {
-        String stateName =  io.readString("Enter a State Name for the new order.");
+    public String getNewOrderState(List<String> stateAbbrList) {
+        String stateAbbr =  io.readString("Enter a State Abbreviation for " +
+                "the new order. (Ex: Enter TX for Texas, FL for Florida").toUpperCase();
 
-        while (!stateNameList.contains(stateName)) {
-            stateName = io.readString("Invalid entry! Enter a valid State name.");
+        while (!stateAbbrList.contains(stateAbbr)) {
+            stateAbbr = io.readString("Invalid entry! Enter a valid " +
+                    "State Abbreviation.").toUpperCase();
         }
 
-        return stateName;
+        return stateAbbr;
     }
 
     public String getProductType(List<Product> productList) {
@@ -124,21 +126,22 @@ public class View {
             return newCustomerName;
     }
 
-    public String editOrderState(String oldStateName, List<String> stateNameList) {
+    public String editOrderState(String oldStateName, List<String> stateAbbrList) {
         io.print("Current State: " + oldStateName);
 
-        String newStateName = io.readString("Type new State Name or press " +
-                "Enter to leave unchanged.");
+        String newStateAbbr = io.readString("Type new State Abbreviation or " +
+                "press Enter to leave unchanged.").toUpperCase();
 
-        while (!stateNameList.contains(newStateName)) {
-            if (newStateName.equals(""))
+        while (!stateAbbrList.contains(newStateAbbr)) {
+            if (newStateAbbr.equals(""))
                 return oldStateName;
 
-            newStateName = io.readString("Invalid entry! Please enter a " +
-                    "valid State Name or press Enter to leave unchanged.");
+            newStateAbbr = io.readString("Invalid entry! Please enter a " +
+                    "valid State Abbreviation or press Enter to leave unchanged.")
+                    .toUpperCase();
         }
 
-        return newStateName;
+        return newStateAbbr;
     }
 
     public String editOrderProductType(String oldProductType, List<Product> productList,
