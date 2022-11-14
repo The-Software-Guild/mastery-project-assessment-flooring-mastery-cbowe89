@@ -54,8 +54,7 @@ public class ServiceLayerImpl implements ServiceLayer {
     @Override
     public Order createNewOrder(String newCustomerName, String newOrderState,
                                 String productType, BigDecimal newOrderArea)
-            throws PersistenceException, TaxFileNotFoundException {
-        List<String> stateNameList = getStateNameList();
+            throws PersistenceException {
         return ORDER_DAO.createNewOrder(newCustomerName,
                 newOrderState, productType, newOrderArea);
     }

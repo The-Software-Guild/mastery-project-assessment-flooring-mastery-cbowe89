@@ -133,30 +133,29 @@ public class FileDaoImpl implements FileDao {
         String formattedDate = date.format(DateTimeFormatter.ofPattern("MMddyyyy"));
         File file = new File(String.format("Orders/Orders_%s.txt", formattedDate));
 
-        if(file.isFile()) {
             try {
-                sc = new Scanner(new BufferedReader(new FileReader(file)));
+                if(file.isFile()) {
+                    sc = new Scanner(new BufferedReader(new FileReader(file)));
 
-                String currentLine;
-                Order currentOrder;
+                    String currentLine;
+                    Order currentOrder;
 
-                while (sc.hasNextLine()) {
-                    currentLine = sc.nextLine();
-                    if (skipFirstLine) {
-                        skipFirstLine = false;
+                    while (sc.hasNextLine()) {
+                        currentLine = sc.nextLine();
+                        if (skipFirstLine) {
+                            skipFirstLine = false;
+                        } else {
+                            currentOrder = unmarshallOrder(currentLine);
+                            orderList.add(currentOrder);
+                        }
                     }
-                    else {
-                        currentOrder = unmarshallOrder(currentLine);
-                        orderList.add(currentOrder);
-                    }
+                    sc.close();
                 }
-                sc.close();
+
+                return orderList;
             } catch (FileNotFoundException e) {
                 throw new PersistenceException("Order file for date not found.", e);
             }
-        }
-
-        return orderList;
     }
 
     @Override
@@ -175,15 +174,18 @@ public class FileDaoImpl implements FileDao {
             throws PersistenceException {
         PrintWriter out;
 
+        String formattedDate = date.format(DateTimeFormatter.ofPattern("MMddyyyy"));
+        String fileName = String.format("Orders/Orders_%s.txt", formattedDate);
+
         try {
-            out = new PrintWriter(new FileWriter(("Orders/Order_" +
-                    date + ".txt"), true));
+            out = new PrintWriter(new FileWriter((fileName), true));
 
             // Write Order to file (appended to end of file)
             out.println(marshallOrder(order));
             // Flush stream
             out.flush();
 
+            out.close();
         } catch (IOException e) {
             throw new PersistenceException(
                     "Could not persist order information.", e);
