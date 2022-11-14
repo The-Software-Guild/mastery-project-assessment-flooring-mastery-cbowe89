@@ -10,10 +10,10 @@ import java.util.List;
 public interface FileDao {
     Product unmarshallProduct(String line);
 
-    State unmarshallTaxes(String line) throws PersistenceException;
-
     List<Product> readProductFile(String fileName) throws
             PersistenceException;
+
+    State unmarshallTaxes(String line) throws PersistenceException;
 
     List<State> readTaxFile(String fileName) throws
             PersistenceException;

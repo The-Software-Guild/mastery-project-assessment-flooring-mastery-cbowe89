@@ -14,101 +14,182 @@ import java.util.*;
 public class FileDaoImpl implements FileDao {
     private static final String DELIMITER = ",";
 
+    /**
+     * No args constructor for FileDaoImpl
+     */
     public FileDaoImpl() {
     }
 
+    /**
+     * Reads a line of Product information and unmarshalls the information
+     * to create a new Product object
+     * @param line product information
+     * @return new Product object
+     */
     @Override
     public Product unmarshallProduct(String line) {
+        // Split line at DELIMITER, store tokens in array
         String[] productTokens = line.split(DELIMITER);
+
+        // First token (index 0) is productType
         String productType = productTokens[0];
+
+        // Create new Product object
         Product productFromFile = new Product(productType);
+
+        // Set costPerSquareFoot from second token (index 1)
         productFromFile.setCostPerSquareFoot(new BigDecimal(productTokens[1])
                 .setScale(2, RoundingMode.DOWN));
+
+        // Set laborCostPerSquareFoot from third token (index 2)
         productFromFile.setLaborCostPerSquareFoot(new BigDecimal(productTokens[2])
                 .setScale(2, RoundingMode.DOWN));
+
+        // Return new Product object
         return productFromFile;
     }
 
+    /**
+     * Reads a file of Product information, creates Product objects
+     * based on the information in each line, and creates a list of
+     * Product objects to return
+     * @param fileName Product information file
+     * @return list of Product objects
+     * @throws PersistenceException if product file not found
+     */
     @Override
     public List<Product> readProductFile(String fileName)
             throws PersistenceException {
+        // Declare and initialize variables
         List<Product> productList = new ArrayList<>();
         boolean skipFirstLine = true;
-
         Scanner sc;
 
         try {
+            // Initialize Scanner object
             sc = new Scanner(new BufferedReader(new FileReader(fileName)));
 
-            String currentLine;
-            Product currentProduct;
+            String currentLine; // To hold currentLine while reading file
+            Product currentProduct; // To hold Product object from currentLine
 
             while (sc.hasNextLine()) {
                 currentLine = sc.nextLine();
 
                 if (skipFirstLine)
+                    // Skip first line which is header row
                     skipFirstLine = false;
                 else {
+                    // Unmarshall currentLine, create new Product object
                     currentProduct = unmarshallProduct(currentLine);
+                    // Add new Product object to productList
                     productList.add(currentProduct);
                 }
             }
+
+            // Close Scanner object
+            sc.close();
+
+            // Return list of Product objects
+            return productList;
         } catch (FileNotFoundException e) {
+            // Throw exception if unable to find product file
             throw new PersistenceException("Product file not found.", e);
         }
-
-        sc.close();
-
-        return productList;
     }
 
+    /**
+     * Reads a line of Tax information and unmarshalls the information
+     * to create a new State object
+     * @param line state/tax information
+     * @return new State object
+     */
     @Override
     public State unmarshallTaxes(String line) {
+        // Split line at DELIMITER, store tokens in array
         String[] taxTokens = line.split(DELIMITER);
+
+        // First token (index 0) is State abbreviation
         String stateAbbr = taxTokens[0];
+
+        // Create new State object
         State stateFromFile = new State(stateAbbr);
+
+        // Set state name from second token (index 1)
         stateFromFile.setStateName(taxTokens[1]);
+
+        // Set state tax rate from third token (index 2)
         stateFromFile.setTaxRate(new BigDecimal(taxTokens[2]));
+
+        // Return new State object
         return stateFromFile;
     }
 
+    /**
+     * Reads a file of State/Tax information, creates State objects
+     * based on the information in each line, and creates a list of
+     * State objects to return
+     * @param fileName State information file
+     * @return list of State objects
+     * @throws PersistenceException if state/tax file not found
+     */
     @Override
     public List<State> readTaxFile(String fileName)
             throws PersistenceException {
+        // Declare and initialize variables
         List<State> stateList = new ArrayList<>();
         boolean skipFirstLine = true;
-
         Scanner sc;
 
         try {
+            // Initialize Scanner object
             sc = new Scanner(new BufferedReader(new FileReader(fileName)));
-            String currentLine;
-            State currentState;
+
+            String currentLine; // To hold currentLine while reading file
+            State currentState; // To hold State object from currentLine
 
             while (sc.hasNextLine()) {
                 currentLine = sc.nextLine();
 
                 if (skipFirstLine)
+                    // Skip first line which is header row
                     skipFirstLine = false;
                 else {
+                    // Unmarshall currentLine, create new State object
                     currentState = unmarshallTaxes(currentLine);
+                    // Add new Product object to productList
                     stateList.add(currentState);
                 }
             }
 
+            // Close Scanner object
             sc.close();
+
+            // Return list of State objects
+            return stateList;
         } catch (FileNotFoundException e) {
+            // Throw exception if unable to find state/tax file
             throw new PersistenceException("Tax file not found.", e);
         }
-
-        return stateList;
     }
 
+    /**
+     * Reads a line of Order information and unmarshalls the information
+     * to create a new Order object
+     * @param line Order information
+     * @return new Order object
+     */
     @Override
     public Order unmarshallOrder(String line) {
+        // Split line at DELIMITER, store tokens in array
         String[] orderTokens = line.split(DELIMITER);
+
+        // First token (index 0) is Order number
         String orderNumber = orderTokens[0];
+
+        // Create new Order object
         Order orderFromFile = new Order(Integer.parseInt(orderNumber));
+
+        // Set remaining Order attributes based on remaining tokens
         orderFromFile.setCustomerName(orderTokens[1]);
         orderFromFile.setState(orderTokens[2]);
         orderFromFile.setTaxRate(new BigDecimal(orderTokens[3]));
@@ -120,17 +201,30 @@ public class FileDaoImpl implements FileDao {
         orderFromFile.setLaborCost(new BigDecimal(orderTokens[9]));
         orderFromFile.setTax(new BigDecimal(orderTokens[10]));
         orderFromFile.setTotal(new BigDecimal(orderTokens[11]));
+
+        // Return new Order object
         return orderFromFile;
     }
 
+    /**
+     * Reads a file of Order information, creates Order objects
+     * based on the information in each line, and creates a list of
+     * Order objects to return
+     * @param date Date of orders
+     * @return List of Orders objects
+     * @throws PersistenceException if Order file not found
+     */
     @Override
     public List<Order> readOrderFile(LocalDate date) throws
             PersistenceException {
-        Scanner sc;
-        boolean skipFirstLine = true;
+        // Declare variables
         List<Order> orderList = new ArrayList<>();
+        boolean skipFirstLine = true;
+        Scanner sc;
 
+        // Ensure date is formatted properly, store as string
         String formattedDate = date.format(DateTimeFormatter.ofPattern("MMddyyyy"));
+        // Create new File instance
         File file = new File(String.format("Orders/Orders_%s.txt", formattedDate));
 
             try {
@@ -175,8 +269,7 @@ public class FileDaoImpl implements FileDao {
         PrintWriter out;
 
         String formattedDate = date.format(DateTimeFormatter.ofPattern("MMddyyyy"));
-        String fileName = String.format("Orders/Orders_%s.txt", formattedDate);
-        File file = new File(fileName);
+        File file = new File(String.format("Orders/Orders_%s.txt", formattedDate));
 
         try {
             out = new PrintWriter(new FileWriter((file), true));
@@ -191,7 +284,7 @@ public class FileDaoImpl implements FileDao {
             out.println(marshallOrder(order));
             // Flush stream
             out.flush();
-
+            // Close PrintWriter object
             out.close();
         } catch (IOException e) {
             throw new PersistenceException(
@@ -236,33 +329,41 @@ public class FileDaoImpl implements FileDao {
     }
 
     @Override
-    public void removeOrderFromFile(LocalDate date, Order orderToRemove) throws PersistenceException {
+    public void removeOrderFromFile(LocalDate date, Order orderToRemove)
+            throws PersistenceException {
+        // Declare Scanner, PrintWriter, and StringBuilder objects
         Scanner sc;
         PrintWriter out;
+        StringBuilder stringBuilder;
 
+        // Ensure correct format of date, save as String, and create fileName String
         String formattedDate = date.format(DateTimeFormatter.ofPattern("MMddyyyy"));
         String fileName = String.format("Orders/Orders_%s.txt", formattedDate);
 
         try {
-            // Initialize PrintWriter object
+            // Initialize Scanner, PrintWriter, and StringBuilder objects
             sc = new Scanner(new File(fileName));
+            out = new PrintWriter(new FileWriter(fileName));
+            stringBuilder = new StringBuilder();
 
-            StringBuilder builder = new StringBuilder();
-
+            // Append all lines of file to stringBuilder
             while (sc.hasNextLine())
-                builder.append(sc.nextLine()).append(System.lineSeparator());
+                stringBuilder.append(sc.nextLine()).append(System.lineSeparator());
 
-            String fileContents = builder.toString();
-
+            // Scanner no longer used - close Scanner
             sc.close();
 
+            // Create String from stringBuilder
+            String fileContents = stringBuilder.toString();
+
+            // Remove order from fileContents String by replacing it with ""
             fileContents = fileContents.replaceAll(marshallOrder(orderToRemove)
                     .concat(System.lineSeparator()), "");
 
-            out = new PrintWriter(new FileWriter(fileName));
-
+            // Use PrintWriter to write edited fileContents to file
             out.print(fileContents);
 
+            // Flush stream
             out.flush();
         } catch (IOException e) {
             throw new PersistenceException("Could not persist order edit.", e);
