@@ -394,24 +394,26 @@ public class FileDaoImpl implements FileDao {
         String fileName = String.format("Orders/Orders_%s.txt", formattedDate);
 
         try {
-            // Initialize Scanner, PrintWriter, and StringBuilder objects
+            // Initialize Scanner and StringBuilder objects
             sc = new Scanner(new File(fileName));
-            out = new PrintWriter(new FileWriter(fileName));
             stringBuilder = new StringBuilder();
 
             // Append all lines of file to stringBuilder
             while (sc.hasNextLine())
                 stringBuilder.append(sc.nextLine()).append(System.lineSeparator());
 
-            // Scanner no longer used - close Scanner
-            sc.close();
-
             // Create String from stringBuilder
             String fileContents = stringBuilder.toString();
+
+            // Scanner no longer used - close Scanner
+            sc.close();
 
             // Remove order from fileContents String by replacing it with ""
             fileContents = fileContents.replaceAll(marshallOrder(orderToRemove)
                     .concat(System.lineSeparator()), "");
+
+            // Initialize PrintWriter object
+            out = new PrintWriter(new FileWriter(fileName));
 
             // Use PrintWriter to write edited fileContents to file
             out.print(fileContents);

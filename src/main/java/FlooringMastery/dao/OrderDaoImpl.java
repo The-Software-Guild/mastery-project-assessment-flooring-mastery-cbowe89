@@ -12,16 +12,9 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 public class OrderDaoImpl implements OrderDao {
-    private final String ORDER_FILE;
     private final FileDao FILE_DAO;
 
     public OrderDaoImpl() {
-        ORDER_FILE = "ordersTest.txt";
-        FILE_DAO = new FileDaoImpl();
-    }
-
-    public OrderDaoImpl(String orderFileName) {
-        this.ORDER_FILE = orderFileName;
         FILE_DAO = new FileDaoImpl();
     }
 
