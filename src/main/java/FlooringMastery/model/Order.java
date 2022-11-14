@@ -3,24 +3,43 @@ package FlooringMastery.model;
 import java.math.BigDecimal;
 import java.util.Objects;
 
+/**
+ * The {@code Order} class is responsible for creating new Order objects
+ * based on the values passed to the constructor. It includes getter and
+ * setter methods for all Order object values. It overrides the toString,
+ * equals, and hashcode methods.
+ */
 public class Order {
-    int orderNumber;
-    String customerName;
-    String state;
-    BigDecimal taxRate;
-    String productType;
-    BigDecimal area;
-    BigDecimal costPerSquareFoot;
-    BigDecimal laborCostPerSquareFoot;
-    BigDecimal materialCost;
-    BigDecimal laborCost;
-    BigDecimal tax;
-    BigDecimal total;
+    // Values for Order objects
+    private int orderNumber;
+    private String customerName;
+    private String state;
+    private BigDecimal taxRate;
+    private String productType;
+    private BigDecimal area;
+    private BigDecimal costPerSquareFoot;
+    private BigDecimal laborCostPerSquareFoot;
+    private BigDecimal materialCost;
+    private BigDecimal laborCost;
+    private BigDecimal tax;
+    private BigDecimal total;
 
-    public Order(int newOrderNumber) {
-        this.orderNumber = newOrderNumber;
+    /**
+     * Constructor takes one parameter (orderNumber) and
+     * creates a new Order object
+     * @param orderNumber number (ID) of new Order
+     */
+    public Order(int orderNumber) {
+        this.orderNumber = orderNumber;
     }
 
+    /**
+     * Constructor takes 4 parameters and creates a new Order object
+     * @param newCustomerName customer name
+     * @param newOrderState order state
+     * @param productType product type
+     * @param newOrderArea order area (sq ft)
+     */
     public Order(String newCustomerName, String newOrderState,
                  String productType, BigDecimal newOrderArea) {
         this.customerName = newCustomerName;
@@ -29,11 +48,19 @@ public class Order {
         this.area = newOrderArea;
     }
 
-    public Order(int orderNumber, String customerName, String state,
+    /**
+     * Constructor takes 5 parameters and creates a new Order object
+     * @param orderNumber order number
+     * @param customerName customer name
+     * @param stateAbbr state abbreviation
+     * @param productType product type
+     * @param area order area (sq ft)
+     */
+    public Order(int orderNumber, String customerName, String stateAbbr,
                  String productType, BigDecimal area) {
         this.orderNumber = orderNumber;
         this.customerName = customerName;
-        this.state = state;
+        this.state = stateAbbr;
         this.productType = productType;
         this.area = area;
     }
