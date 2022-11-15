@@ -13,21 +13,18 @@ public class ServiceLayerImpl implements ServiceLayer {
     private final OrderDao ORDER_DAO;
     private final ProductDao PRODUCT_DAO;
     private final StateDao STATE_DAO;
-    private final AuditDao AUDIT_DAO;
 
     public ServiceLayerImpl() {
         ORDER_DAO = new OrderDaoImpl();
         PRODUCT_DAO = new ProductDaoImpl();
         STATE_DAO = new StateDaoImpl();
-        AUDIT_DAO = new AuditDaoImpl();
     }
 
     public ServiceLayerImpl(OrderDao orderDao, ProductDao productDao,
-                            StateDao stateDao, AuditDao auditDao) {
+                            StateDao stateDao) {
         this.ORDER_DAO = orderDao;
         this.PRODUCT_DAO = productDao;
         this.STATE_DAO = stateDao;
-        this.AUDIT_DAO = auditDao;
     }
 
     @Override
@@ -63,7 +60,6 @@ public class ServiceLayerImpl implements ServiceLayer {
     public void addNewOrder(LocalDate newOrderDate, Order newOrder)
             throws PersistenceException {
         ORDER_DAO.addNewOrderToFile(newOrderDate, newOrder);
-        // Audit entry
     }
 
     @Override
@@ -78,21 +74,18 @@ public class ServiceLayerImpl implements ServiceLayer {
     public void editOrder(LocalDate orderDate, Order orderToEdit,
                           Order editedOrder) throws PersistenceException {
         ORDER_DAO.writeEditOrder(orderDate, orderToEdit, editedOrder);
-        // Audit Entry
     }
 
     @Override
     public void removeOrder(LocalDate orderDate, Order orderToRemove)
             throws PersistenceException {
         ORDER_DAO.removeOrder(orderDate, orderToRemove);
-        // Audit entry
     }
 
     @Override
     public void exportAllOrders() throws PersistenceException {
         String exportFile = "Backup/DataExport.txt";
         ORDER_DAO.exportAllData(exportFile);
-        AUDIT_DAO.writeAuditEntry("All order data exported.");
     }
 
     @Override
