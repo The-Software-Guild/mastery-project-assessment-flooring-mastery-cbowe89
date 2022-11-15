@@ -12,6 +12,7 @@ public class App {
 
         Controller controller = ctx.getBean("controller", Controller.class);
 
+        // Run the controller
         controller.run();
     }
 }
