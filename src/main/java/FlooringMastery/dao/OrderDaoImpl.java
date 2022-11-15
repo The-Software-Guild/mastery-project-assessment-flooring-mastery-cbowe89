@@ -11,7 +11,12 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
+/**
+ * The {@code OrderDaoImpl} class is responsible for interacting
+ * with Order objects in the Flooring Order App
+ */
 public class OrderDaoImpl implements OrderDao {
+    // Declare variable for FileDao object
     private final FileDao FILE_DAO;
 
     /**

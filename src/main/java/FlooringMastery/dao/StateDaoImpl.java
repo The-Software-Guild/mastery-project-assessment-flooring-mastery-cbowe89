@@ -2,13 +2,16 @@ package FlooringMastery.dao;
 
 import FlooringMastery.model.State;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
+/**
+ * The {@code StateDaoImpl} class is responsible for interacting
+ * with the State objects (state and tax information) in the
+ * Flooring Order App
+ */
 public class StateDaoImpl implements StateDao {
+    // Declare variable for FileDao object
     private final FileDao FILE_DAO;
 
     /**
@@ -31,28 +34,6 @@ public class StateDaoImpl implements StateDao {
     }
 
     /**
-     * Creates and returns a list of all state names
-     * @return String list of state names
-     * @throws PersistenceException if unable to retrieve data
-     */
-    @Override
-    public List<String> getStateNameList() throws PersistenceException {
-        // Call getStateInfoList() to get list of all States
-        List<State> stateInfoList = getStateInfoList();
-
-        // Declare and initialize a new ArrayList to store state names
-        List<String> stateNameList = new ArrayList<>();
-
-        // Iterate over stateInfoList, add stateName of each State to
-        // stateNameList
-        for (State state : stateInfoList)
-            stateNameList.add(state.getStateName());
-
-        // Return stateNameList
-        return stateNameList;
-    }
-
-    /**
      * Creates and returns a list of all state abbreviations
      * @return String list of state abbreviations
      * @throws PersistenceException if unable to retrieve data
@@ -72,78 +53,5 @@ public class StateDaoImpl implements StateDao {
 
         // Return stateNameList
         return stateAbbrList;
-    }
-
-    /**
-     * Creates a map to store a state abbreviation (value) with its
-     * corresponding state name (key)
-     * @return map of state names and abbreviations
-     * @throws PersistenceException if unable to retrieve data
-     */
-    @Override
-    public Map<String, String> getStateNameAbbrMap() throws
-            PersistenceException {
-        // Call getStateInfoList() to get list of all States
-        List<State> stateInfoList = getStateInfoList();
-
-        // Declare and initialize a new HashMap to store state names
-        // with their abbreviations
-        Map<String, String> stateNameAbbrMap = new HashMap<>();
-
-        // Iterate over stateInfoList, put key-value pair into map
-        // State names are the keys, state abbreviations are the values
-        for (State state : stateInfoList)
-            stateNameAbbrMap.put(state.getStateName(), state.getStateAbbr());
-
-        // Return stateNameAbbrMap
-        return stateNameAbbrMap;
-    }
-
-    /**
-     * Creates a map to store a state tax rate (value) with its
-     * corresponding state name (key)
-     * @return map of state names and tax rates
-     * @throws PersistenceException if unable to retrieve data
-     */
-    @Override
-    public Map<String, BigDecimal> getStateNameTaxMap() throws PersistenceException {
-        // Call getStateInfoList() to get list of all States
-        List<State> stateInfoList = getStateInfoList();
-
-        // Declare and initialize a new HashMap to store state names
-        // with their tax rates
-        Map<String, BigDecimal> stateNameTaxMap = new HashMap<>();
-
-        // Iterate over stateInfoList, put key-value pair into map
-        // State names are the keys, state tax rates are the values
-        for (State state : stateInfoList)
-            stateNameTaxMap.put(state.getStateName(), state.getTaxRate());
-
-        // Return stateNameTaxMap
-        return stateNameTaxMap;
-    }
-
-    /**
-     * Creates a map to store a state tax rate (value) with its
-     * corresponding state abbreviation (key)
-     * @return map of state abbreviations and tax rates
-     * @throws PersistenceException if unable to retrieve data
-     */
-    @Override
-    public Map<String, BigDecimal> getStateAbbrTaxMap() throws PersistenceException {
-        // Call getStateInfoList() to get list of all States
-        List<State> stateInfoList = getStateInfoList();
-
-        // Declare and initialize a new HashMap to store state abbreviations
-        // with their tax rates
-        Map<String, BigDecimal> stateAbbrTaxMap = new HashMap<>();
-
-        // Iterate over stateInfoList, put key-value pair into map
-        // State abbreviations are the keys, state tax rates are the values
-        for (State state : stateInfoList)
-            stateAbbrTaxMap.put(state.getStateAbbr(), state.getTaxRate());
-
-        // Return stateAbbrTaxMap
-        return stateAbbrTaxMap;
     }
 }

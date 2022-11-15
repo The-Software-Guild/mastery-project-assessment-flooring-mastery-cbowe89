@@ -1,12 +1,9 @@
 package FlooringMastery.ui;
 
-import FlooringMastery.dao.StateDaoImpl;
-
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.util.List;
 import java.util.Scanner;
 
 public class UserIOConsoleImpl implements UserIO {
@@ -41,11 +38,6 @@ public class UserIOConsoleImpl implements UserIO {
     @Override
     public void printf(String message, BigDecimal min) {
         System.out.printf(message, min);
-    }
-
-    @Override
-    public void printf(String message, BigDecimal min, BigDecimal max) {
-        System.out.printf(message, min, max);
     }
 
     /**
@@ -146,34 +138,6 @@ public class UserIOConsoleImpl implements UserIO {
                 invalidInput = false;
             else
                 printf("Selection must be greater than %d\n", min);
-        }
-
-        return num;
-    }
-
-    /**
-     * Complex method - takes in a prompt to display to the
-     * console, continually re-prompts the user with prompt until
-     * they enter a BigDecimal within the specified min/max range
-     * to be returned as the answer to the prompt.
-     * @param prompt String, explains what info is wanted from the user
-     * @param min Minimum acceptable value for return
-     * @param max Maximum acceptable value for return
-     * @return A BigDecimal value as an answer to the prompt within
-     * the min/max range
-     */
-    @Override
-    public BigDecimal readBigDecimal(String prompt, BigDecimal min, BigDecimal max) {
-        boolean invalidInput = true;
-        BigDecimal num = null;
-
-        while (invalidInput) {
-            num = readBigDecimal(prompt);
-            if (num.doubleValue() >= min.doubleValue()
-                    && num.doubleValue() <= max.doubleValue())
-                invalidInput = false;
-            else
-                printf("Selection must be between %d and %d.\n", min, max);
         }
 
         return num;

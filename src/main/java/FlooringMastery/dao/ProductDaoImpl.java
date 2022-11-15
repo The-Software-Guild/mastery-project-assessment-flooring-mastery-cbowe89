@@ -5,7 +5,12 @@ import FlooringMastery.model.Product;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * The {@code ProductDaoImpl} class is responsible for interacting
+ * with Product objects in the Flooring Order App
+ */
 public class ProductDaoImpl implements ProductDao {
+    // Declare variable for FileDao object
     private final FileDao FILE_DAO;
 
     /**

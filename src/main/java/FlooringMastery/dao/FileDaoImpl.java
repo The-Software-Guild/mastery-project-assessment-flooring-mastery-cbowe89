@@ -11,7 +11,13 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
+/**
+ * The {@code FileDaoImpl} class is responsible for unmarshalling
+ * and reading Product and State (tax) files. It is also responsible
+ * for unmarshalling/marshalling and reading/writing from/to Order files.
+ */
 public class FileDaoImpl implements FileDao {
+    // Declare and initialize delimiter user in files
     private static final String DELIMITER = ",";
 
     /**

@@ -283,11 +283,6 @@ public class View {
         continueMessage();
     }
 
-    public void displayNullOrderMsg() {
-        io.print("Unable to find order match the Date and Order # entered.");
-        continueMessage();
-    }
-
     public void continueMessage() {
         io.readString("Press Enter to Continue...");
     }

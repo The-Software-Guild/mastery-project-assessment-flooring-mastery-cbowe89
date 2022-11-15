@@ -12,8 +12,6 @@ public interface UserIO {
 
     void printf(String message, int min, int max);
 
-    void printf(String message, BigDecimal min, BigDecimal max);
-
     String readString(String prompt);
 
     int readInt(String prompt);
@@ -23,8 +21,6 @@ public interface UserIO {
     BigDecimal readBigDecimal(String prompt);
 
     BigDecimal readBigDecimal(String prompt, BigDecimal min);
-
-    BigDecimal readBigDecimal(String prompt, BigDecimal min, BigDecimal max);
 
     LocalDate readDate(String prompt);
 
