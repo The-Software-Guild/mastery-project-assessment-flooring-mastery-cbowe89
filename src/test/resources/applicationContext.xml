@@ -21,8 +21,6 @@
         <constructor-arg ref="userIO"/>
     </bean>
 
-    <bean id="auditDao" class="FlooringMastery.dao.AuditDaoImpl"/>
-
     <bean id="fileDao" class="FlooringMastery.dao.FileDaoImpl"/>
 
     <bean id="orderDao" class="FlooringMastery.dao.OrderDaoImpl"/>
@@ -32,8 +30,6 @@
     <bean id="stateDao" class="FlooringMastery.dao.StateDaoImpl"/>
 
     <bean id="serviceLayer" class="FlooringMastery.service.ServiceLayerImpl">
-        <constructor-arg ref="auditDao"/>
-        <constructor-arg ref="fileDao"/>
         <constructor-arg ref="orderDao"/>
         <constructor-arg ref="productDao"/>
         <constructor-arg ref="stateDao"/>

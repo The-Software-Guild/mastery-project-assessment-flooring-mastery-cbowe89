@@ -75,7 +75,7 @@ public class Controller {
             List<Order> ordersForDateEntered = serviceLayer.getAllOrders(dateEntered);
             // Display all orders from the list
             view.displayOrdersForDate(ordersForDateEntered);
-        } catch (PersistenceException | OrderFileNotFoundException e) {
+        } catch (PersistenceException e) {
             // No order file located for date entered
             view.displayErrorMessage(e.getMessage());
         }
@@ -118,8 +118,7 @@ public class Controller {
                 // Discard new order
                 case 2 -> view.orderDiscardedMsg(); // Display discard message
             }
-        } catch (PersistenceException | ProductFileNotFoundException |
-                 TaxFileNotFoundException e) {
+        } catch (PersistenceException | OrderBuildException e) {
             // Display message for correct exception
             view.displayErrorMessage(e.getMessage());
         }
@@ -171,14 +170,14 @@ public class Controller {
 
             switch (confirmEditOrder) {
                 case 1 -> { // Save edited order
-                    serviceLayer.editOrder(orderDate, orderToEdit, editedOrder);
+                    serviceLayer.writeEditOrder(orderDate, orderToEdit, editedOrder);
                     view.editSuccessMsg(); // Display editSuccessMsg
                 }
                 case 2 -> view.editDiscardedMsg(); // Display edit discarded message
             }
 
         } catch (PersistenceException | OrderNotFoundException |
-                 TaxFileNotFoundException | ProductFileNotFoundException e) {
+                 OrderBuildException e) {
             view.displayErrorMessage(e.getMessage());
         }
     }
