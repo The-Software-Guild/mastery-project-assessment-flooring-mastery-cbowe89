@@ -3,16 +3,34 @@ package FlooringMastery.model;
 import java.math.BigDecimal;
 import java.util.Objects;
 
+/**
+ * The {@code Product} class is responsible for creating new Product objects
+ * based on the values passed to the constructor. It includes getter and
+ * setter methods for all Product object values. It overrides the toString,
+ * equals, and hashcode methods.
+ */
 public class Product {
-    String productType;
-    BigDecimal costPerSquareFoot;
-    BigDecimal laborCostPerSquareFoot;
+    // Values for Order objects
+    private String productType;
+    private BigDecimal costPerSquareFoot;
+    private BigDecimal laborCostPerSquareFoot;
 
 
+    /**
+     * Constructor takes one parameter (productType) and
+     * creates a new Product object
+     * @param productType product type
+     */
     public Product(String productType) {
         this.productType = productType;
     }
 
+    /**
+     * Constructor takes 3 parameters and creates a new Product object
+     * @param productType product type
+     * @param costPerSquareFoot cost per square foot of Product
+     * @param laborCostPerSquareFoot labor cost per square foot of Product
+     */
     public Product(String productType, BigDecimal costPerSquareFoot,
                    BigDecimal laborCostPerSquareFoot) {
         this.productType = productType;
