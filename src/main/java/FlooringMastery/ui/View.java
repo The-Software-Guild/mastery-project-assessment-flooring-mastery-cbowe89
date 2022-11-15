@@ -17,11 +17,11 @@ public class View {
     public void displayTitleBanner() {
         io.print("\n******************************");
         io.print("***   Flooring Order App   ***");
-        io.print("******************************");
+        io.print("******************************\n");
     }
 
     public int getMainMenuSelection() {
-        io.print("\n********** MAIN MENU **********");
+        io.print("********** MAIN MENU **********");
         io.print("* 1. Display Orders");
         io.print("* 2. Add an Order");
         io.print("* 3. Edit an Order");
@@ -155,18 +155,33 @@ public class View {
             productNum++;
         }
 
-        String newProductType = io.readString("Type new Product Type or " +
-                "press Enter to leave unchanged.");
+        String newProductTypeInt = io.readString("Type the number for the new " +
+                "Product Type or press Enter to leave unchanged.");
 
-        while (!productTypeList.contains(newProductType)) {
-            if (newProductType.equals(""))
+        boolean isInt, isValid = false;
+
+        while (!isValid) {
+            try {
+                Integer.parseInt(newProductTypeInt);
+                isInt = true;
+            } catch (NumberFormatException e) {
+                isInt = false;
+            }
+
+            if (newProductTypeInt.equals("")) {
                 return oldProductType;
-
-            newProductType = io.readString( "Invalid entry! Enter " +
-                    "a valid Product Type or press Enter to leave unchanged.");
+            }
+            else if (isInt && Integer.parseInt(newProductTypeInt) >= 1
+                    && Integer.parseInt(newProductTypeInt) <= productTypeList.size()) {
+                isValid = true;
+            }
+            else {
+                newProductTypeInt = io.readString("Invalid entry! Enter " +
+                        "a valid Product Type or press Enter to leave unchanged.");
+            }
         }
 
-        return newProductType;
+        return productTypeList.get(Integer.parseInt(newProductTypeInt) - 1);
     }
 
     public BigDecimal editOrderArea(BigDecimal oldArea) {
@@ -259,7 +274,7 @@ public class View {
 
     public void displayUnknownCommand() {
         io.print("\n===== UNKNOWN COMMAND =====");
-        io.readString("Please hit enter to continue.");
+        continueMessage();
     }
 
     public void displayErrorMessage(String errorMsg) {
