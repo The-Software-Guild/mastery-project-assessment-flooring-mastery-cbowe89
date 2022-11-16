@@ -6,11 +6,17 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.Scanner;
 
+/**
+ * The {@code UserIOConsoleImpl} class is responsible displaying
+ * information to the user and reading user input
+ */
 public class UserIOConsoleImpl implements UserIO {
-    Scanner scanner;
+    // Declare Scanner object
+    private final Scanner scanner;
 
     /**
-     * Constructor for UserIOConsoleImpl
+     * No-args constructor for UserIOConsoleImpl initializes
+     * a new Scanner object
      */
     public UserIOConsoleImpl() {
         scanner = new Scanner(System.in);
@@ -25,16 +31,32 @@ public class UserIOConsoleImpl implements UserIO {
         System.out.println(message);
     }
 
+    /**
+     * Prints a formatted message with a date
+     * @param message message to print
+     * @param date date
+     */
     @Override
     public void printf(String message, LocalDate date) {
         System.out.printf(message, date);
     }
 
+    /**
+     * Prints a formatted message with min and max int variables
+     * @param message message to print
+     * @param min minimum int value
+     * @param max maximum int value
+     */
     @Override
     public void printf(String message, int min, int max) {
         System.out.printf(message, min, max);
     }
 
+    /**
+     * Prints a formatted message with a minimum BigDecimal value
+     * @param message message to print
+     * @param min minimum BigDecimal value
+     */
     @Override
     public void printf(String message, BigDecimal min) {
         System.out.printf(message, min);
@@ -54,12 +76,11 @@ public class UserIOConsoleImpl implements UserIO {
     }
 
     /**
-     * Simple Method - Takes in a prompt to display to the
-     * console, continually re-prompts the user with prompt
-     * until they enter an integer to be returned
-     * as the answer to the prompt.
+     * Simple method - Takes in a prompt to display to the console,
+     * continually re-prompts the user with prompt until they enter
+     * an int to be returned as the answer to the prompt.
      * @param prompt String, explains what info is wanted from the user
-     * @return Answer to the prompt as an integer
+     * @return Answer to the prompt as an int
      */
     @Override
     public int readInt(String prompt) {
@@ -127,6 +148,15 @@ public class UserIOConsoleImpl implements UserIO {
         return num;
     }
 
+    /**
+     * Complex method - takes in a prompt to display to the console,
+     * continually re-prompts the user with prompt until they enter
+     * a BigDecimal value greater than or equal to the min value to
+     * be returned as the answer to the prompt.
+     * @param prompt String, explains what info is wanted from the user
+     * @param min Minimum acceptable value for return
+     * @return A BigDecimal value as an answer ot the prompt >= the min value
+     */
     @Override
     public BigDecimal readBigDecimal(String prompt, BigDecimal min) {
         boolean invalidInput = true;
@@ -143,6 +173,14 @@ public class UserIOConsoleImpl implements UserIO {
         return num;
     }
 
+    /**
+     * Simple Method - Takes in a prompt to display to the
+     * console, continually re-prompts the user with prompt
+     * until they enter a Date to be returned as an answer
+     * to the prompt.
+     * @param prompt String, explains what info is wanted from the user
+     * @return Answer to the prompt as a LocalDate
+     */
     @Override
     public LocalDate readDate(String prompt) {
         boolean invalidInput = true;
@@ -162,6 +200,15 @@ public class UserIOConsoleImpl implements UserIO {
         return dateEntered;
     }
 
+    /**
+     * Complex method - takes in a prompt to display to the console,
+     * continually re-prompts the user with prompt until they enter
+     * a Date value greater than the min Date to be returned as the
+     * answer to the prompt.
+     * @param prompt String, explains what info is wanted from the user
+     * @param minDate Minimum acceptable value for return
+     * @return A LocalDate value as an answer ot the prompt > the min value
+     */
     @Override
     public LocalDate readDate(String prompt, LocalDate minDate) {
         boolean invalidInput = true;
