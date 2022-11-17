@@ -1,0 +1,2 @@
+OrderNumber,CustomerName,State,TaxRate,ProductType,Area,CostPerSquareFoot,LaborCostPerSquareFoot,MaterialCost,LaborCost,Tax,Total
+5,Jim Bob,KY,6.000,Laminate,750,1.75,2.10,1312.50,1575.00,173.25,3060.75

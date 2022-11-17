@@ -65,6 +65,40 @@ public class Order {
         this.area = area;
     }
 
+    /**
+     * Constructor takes 12 parameters (1 for each attribute in an Order
+     * object) and creates a new Order object
+     * @param orderNumber order number
+     * @param customerName customer name
+     * @param state order state
+     * @param taxRate state tax rate
+     * @param productType product type
+     * @param area area (sq ft)
+     * @param costPerSquareFoot material cost per sq ft
+     * @param laborCostPerSquareFoot labor cost per sq ft
+     * @param materialCost total material cost
+     * @param laborCost total labor cost
+     * @param tax total tax
+     * @param total overall total
+     */
+    public Order(int orderNumber, String customerName, String state, BigDecimal taxRate,
+                 String productType, BigDecimal area, BigDecimal costPerSquareFoot,
+                 BigDecimal laborCostPerSquareFoot, BigDecimal materialCost,
+                 BigDecimal laborCost, BigDecimal tax, BigDecimal total) {
+        this.orderNumber = orderNumber;
+        this.customerName = customerName;
+        this.state = state;
+        this.taxRate = taxRate;
+        this.productType = productType;
+        this.area = area;
+        this.costPerSquareFoot = costPerSquareFoot;
+        this.laborCostPerSquareFoot = laborCostPerSquareFoot;
+        this.materialCost = materialCost;
+        this.laborCost = laborCost;
+        this.tax = tax;
+        this.total = total;
+    }
+
     public Integer getOrderNumber() {
         return orderNumber;
     }

@@ -30,5 +30,5 @@ public interface OrderDao {
     void removeOrder(LocalDate orderDate, Order orderToRemove)
             throws PersistenceException;
 
-    void exportAllData(String exportFile) throws PersistenceException;
+    void exportAllData() throws PersistenceException;
 }

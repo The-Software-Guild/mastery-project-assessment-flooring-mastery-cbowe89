@@ -35,8 +35,7 @@ public interface FileDao {
 
     String marshallOrderForExport(Order order, String date);
 
-    void exportAllData(String exportFile)
-            throws PersistenceException;
+    void exportAllData() throws PersistenceException;
 
     int generateNewOrderNum() throws PersistenceException;
 }

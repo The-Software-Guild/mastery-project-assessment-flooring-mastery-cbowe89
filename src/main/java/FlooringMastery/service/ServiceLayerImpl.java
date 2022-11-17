@@ -20,16 +20,6 @@ public class ServiceLayerImpl implements ServiceLayer {
     private final StateDao STATE_DAO;
 
     /**
-     * No-args constructor creates a ServiceLayerImpl object
-     * with new instances of each object.
-     */
-    public ServiceLayerImpl() {
-        ORDER_DAO = new OrderDaoImpl();
-        PRODUCT_DAO = new ProductDaoImpl();
-        STATE_DAO = new StateDaoImpl();
-    }
-
-    /**
      * Constructor takes in 3 parameters (different Dao objects) and
      * creates a ServiceLayerImpl object
      * @param orderDao OrderDaoImpl object
@@ -164,8 +154,7 @@ public class ServiceLayerImpl implements ServiceLayer {
      */
     @Override
     public void exportAllOrders() throws PersistenceException {
-        String exportFile = "Backup/DataExport.txt";
-        ORDER_DAO.exportAllData(exportFile);
+        ORDER_DAO.exportAllData();
     }
 
     /**

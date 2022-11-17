@@ -20,16 +20,19 @@ public class FileDaoImpl implements FileDao {
     // Declare and initialize delimiter user in files
     private static final String DELIMITER = ",";
     private final String ORDER_DIRECTORY;
+    private final String EXPORT_FILE;
 
     public FileDaoImpl() {
         this.ORDER_DIRECTORY = "Orders";
+        this.EXPORT_FILE = "Backup/DataExport.txt";
     }
 
     /**
      * No args constructor for FileDaoImpl
      */
-    public FileDaoImpl(String orderDirectory) {
+    public FileDaoImpl(String orderDirectory, String exportFile) {
         this.ORDER_DIRECTORY = orderDirectory;
+        this.EXPORT_FILE = exportFile;
     }
 
     /**
@@ -465,11 +468,10 @@ public class FileDaoImpl implements FileDao {
     /**
      * Reads all Order Files, writes all Order information with the Order date
      * to the Export File
-     * @param exportFile path/name of Export File
      * @throws PersistenceException if unable to Export all Order data
      */
     @Override
-    public void exportAllData(String exportFile)
+    public void exportAllData()
             throws PersistenceException {
         // Declare PrintWriter object
         PrintWriter out;
@@ -489,7 +491,7 @@ public class FileDaoImpl implements FileDao {
 
         try {
             // Initialize PrintWriter object
-            out = new PrintWriter(new FileWriter(exportFile));
+            out = new PrintWriter(new FileWriter(EXPORT_FILE));
 
             // Declare variables
             String orderAsText, dateString;

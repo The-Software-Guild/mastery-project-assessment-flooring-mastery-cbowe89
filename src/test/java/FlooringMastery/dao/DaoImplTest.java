@@ -6,6 +6,7 @@ import FlooringMastery.model.State;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -35,7 +36,7 @@ class DaoImplTest {
 
     @BeforeEach
     void setUp() throws IOException, PersistenceException {
-        String testOrderFile = "TestClassFiles/Orders_01012050.txt";
+        String testOrderFile = "TestOrderFiles/Orders_01012050.txt";
 
         // Blank the test file and write the header line
         PrintWriter out = new PrintWriter(new FileWriter(testOrderFile, false));
@@ -44,7 +45,8 @@ class DaoImplTest {
                 "LaborCost,Tax,Total");
 
         // Initialize Dao objects
-        testOrderDao = new OrderDaoImpl("TestClassFiles");
+        testOrderDao = new OrderDaoImpl("TestOrderFiles",
+                "TestExportFile/DataExportTest.txt");
         testProductDao = new ProductDaoImpl();
         testStateDao = new StateDaoImpl();
 
@@ -161,6 +163,19 @@ class DaoImplTest {
         int numOfRemainingOrders = testOrderDao.getAllOrders(testOrderDate).size();
 
         assertEquals(0, numOfRemainingOrders, "There should be no orders left");
+    }
+
+    /**
+     * Tests exportAllData from the OrderDaoImpl class.
+     * @throws PersistenceException if unable to write export
+     */
+    @Test
+    void testExportOrders() throws PersistenceException {
+        testOrderDao.exportAllData();
+
+        File exportFile = new File("TestExportFile/DataExportText.txt");
+
+        assertNotNull(exportFile, "Export file should not be null.");
     }
 
     /**

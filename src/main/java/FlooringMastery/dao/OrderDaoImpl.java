@@ -25,8 +25,8 @@ public class OrderDaoImpl implements OrderDao {
         FILE_DAO = new FileDaoImpl();
     }
 
-    public OrderDaoImpl(String orderDirectory) {
-        this.FILE_DAO = new FileDaoImpl(orderDirectory);
+    public OrderDaoImpl(String orderDirectory, String exportFile) {
+        this.FILE_DAO = new FileDaoImpl(orderDirectory, exportFile);
     }
 
     /**
@@ -210,13 +210,11 @@ public class OrderDaoImpl implements OrderDao {
     /**
      * Exports data from all Order Files into a separate DataExport file
      * for backing up information
-     * @param exportFile name of backup file
      * @throws PersistenceException if unable to export data
      */
     @Override
-    public void exportAllData(String exportFile) throws PersistenceException {
-        // Pass the backup file name to the FILE_DAO to export all Order data
-        FILE_DAO.exportAllData(exportFile);
+    public void exportAllData() throws PersistenceException {
+        FILE_DAO.exportAllData();
     }
 
     /**
