@@ -209,19 +209,19 @@ public class View {
     /**
      * Displays the current order state abbreviation and allows the user to leave
      * the state abbreviation as-is or enter a new state abbreviation
-     * @param oldStateName state abbreviation from original Order
+     * @param oldStateAbbr state abbreviation from original Order
      * @param stateAbbrList List of all state abbreviations
      * @return state abbreviation for edited order (regardless of whether it was changed)
      */
-    public String editOrderState(String oldStateName, List<String> stateAbbrList) {
-        io.print("Current State: " + oldStateName);
+    public String editOrderState(String oldStateAbbr, List<String> stateAbbrList) {
+        io.print("Current State: " + oldStateAbbr);
 
         String newStateAbbr = io.readString("Type new State Abbreviation or " +
                 "press Enter to leave unchanged.").toUpperCase();
 
         while (!stateAbbrList.contains(newStateAbbr)) {
             if (newStateAbbr.equals(""))
-                return oldStateName;
+                return oldStateAbbr;
 
             newStateAbbr = io.readString("Invalid entry! Please enter a " +
                     "valid State Abbreviation or press Enter to leave unchanged.")
@@ -366,7 +366,7 @@ public class View {
      * Prompts the user for the order number of the order they want to remove
      * @return order number (int)
      */
-    public int readOrderNumToRemoved() {
+    public int readOrderNumToRemove() {
         return io.readInt("Enter the Order # you wish to remove.");
     }
 

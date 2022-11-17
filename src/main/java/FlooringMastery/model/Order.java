@@ -35,17 +35,17 @@ public class Order {
 
     /**
      * Constructor takes 4 parameters and creates a new Order object
-     * @param newCustomerName customer name
-     * @param newOrderState order state
+     * @param customerName customer name
+     * @param orderState order state
      * @param productType product type
-     * @param newOrderArea order area (sq ft)
+     * @param orderArea order area (sq ft)
      */
-    public Order(String newCustomerName, String newOrderState,
-                 String productType, BigDecimal newOrderArea) {
-        this.customerName = newCustomerName;
-        this.state = newOrderState;
+    public Order(String customerName, String orderState,
+                 String productType, BigDecimal orderArea) {
+        this.customerName = customerName;
+        this.state = orderState;
         this.productType = productType;
-        this.area = newOrderArea;
+        this.area = orderArea;
     }
 
     /**

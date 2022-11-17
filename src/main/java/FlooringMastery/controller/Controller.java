@@ -191,7 +191,7 @@ public class Controller {
         try {
             // Prompt user for Order date and Order number
             LocalDate orderDate = view.getDateToRemove();
-            int orderNum = view.readOrderNumToRemoved();
+            int orderNum = view.readOrderNumToRemove();
 
             // Get order that matches the entered number and date, store
             // in new Order object
