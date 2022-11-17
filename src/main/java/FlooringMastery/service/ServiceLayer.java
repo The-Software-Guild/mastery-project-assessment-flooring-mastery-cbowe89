@@ -10,7 +10,7 @@ import java.util.List;
 
 public interface ServiceLayer {
     Order getOrder(int orderNumber, LocalDate orderDate)
-            throws OrderNotFoundException;
+            throws OrderNotFoundException, PersistenceException;
 
     List<Order> getAllOrders(LocalDate dateEntered)
             throws PersistenceException;

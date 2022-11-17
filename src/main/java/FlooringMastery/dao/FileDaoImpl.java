@@ -19,11 +19,17 @@ import java.util.*;
 public class FileDaoImpl implements FileDao {
     // Declare and initialize delimiter user in files
     private static final String DELIMITER = ",";
+    private final String ORDER_DIRECTORY;
+
+    public FileDaoImpl() {
+        this.ORDER_DIRECTORY = "Orders";
+    }
 
     /**
      * No args constructor for FileDaoImpl
      */
-    public FileDaoImpl() {
+    public FileDaoImpl(String orderDirectory) {
+        this.ORDER_DIRECTORY = orderDirectory;
     }
 
     /**
@@ -123,7 +129,8 @@ public class FileDaoImpl implements FileDao {
         stateFromFile.setStateName(taxTokens[1]);
 
         // Set state tax rate from third token (index 2)
-        stateFromFile.setTaxRate(new BigDecimal(taxTokens[2]));
+        stateFromFile.setTaxRate(new BigDecimal(taxTokens[2])
+                .setScale(3, RoundingMode.HALF_UP));
 
         // Return new State object
         return stateFromFile;
@@ -229,7 +236,7 @@ public class FileDaoImpl implements FileDao {
         // Ensure date is formatted properly, store as string
         String formattedDate = date.format(DateTimeFormatter.ofPattern("MMddyyyy"));
         // Create new File instance
-        File file = new File(String.format("Orders/Orders_%s.txt", formattedDate));
+        File file = new File(String.format(ORDER_DIRECTORY + "/Orders_%s.txt", formattedDate));
 
         try {
             // Initialize Scanner object
@@ -297,7 +304,8 @@ public class FileDaoImpl implements FileDao {
         // Create string to ensure date is properly formatted
         String formattedDate = date.format(DateTimeFormatter.ofPattern("MMddyyyy"));
         // Create new instance of File
-        File file = new File(String.format("Orders/Orders_%s.txt", formattedDate));
+        File file = new File(String.format(ORDER_DIRECTORY + "/Orders_%s.txt",
+                formattedDate));
 
         try {
             // Initialize PrintWriter object
@@ -340,7 +348,8 @@ public class FileDaoImpl implements FileDao {
 
         // Ensure correct format of date, save as String, and create fileName String
         String formattedDate = date.format(DateTimeFormatter.ofPattern("MMddyyyy"));
-        String fileName = String.format("Orders/Orders_%s.txt", formattedDate);
+        String fileName = String.format(ORDER_DIRECTORY + "/Orders_%s.txt",
+                formattedDate);
 
         try {
             // Initialize PrintWriter object
@@ -397,7 +406,8 @@ public class FileDaoImpl implements FileDao {
 
         // Ensure correct format of date, save as String, and create fileName String
         String formattedDate = date.format(DateTimeFormatter.ofPattern("MMddyyyy"));
-        String fileName = String.format("Orders/Orders_%s.txt", formattedDate);
+        String fileName = String.format(ORDER_DIRECTORY + "/Orders_%s.txt",
+                formattedDate);
 
         try {
             // Initialize Scanner and StringBuilder objects
@@ -468,7 +478,7 @@ public class FileDaoImpl implements FileDao {
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("MMddyyyy");
 
         // Create File object for directory where Order files are located
-        File directoryPath = new File("Orders");
+        File directoryPath = new File(ORDER_DIRECTORY);
 
         // Declare and initialize list with names of all order files
         List<String> orderFileNames =
@@ -510,6 +520,52 @@ public class FileDaoImpl implements FileDao {
         }catch (IOException e) {
             // Throw exception if unable to export all orders
             throw new PersistenceException("Could not export order data.", e);
+        }
+    }
+
+    /**
+     * Fetches the latest order number assigned, then calculates and
+     * returns a new order number to assign to a new order
+     * @return int newOrderNum
+     * @throws PersistenceException if error occurs reading files
+     */
+    @Override
+    public int generateNewOrderNum() throws PersistenceException {
+        try {
+            // Declare and initialize DateTimeFormatter object
+            DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("MMddyyyy");
+
+            // Create File object for directory where Order files are located
+            File directoryPath = new File(ORDER_DIRECTORY);
+
+            // Declare and initialize list with names of all order files
+            List<String> orderFileNames =
+                    List.of(Objects.requireNonNull(directoryPath.list()));
+            List<Order> orderList;
+            List<Integer> orderNumList = new ArrayList<>();
+            String dateString;
+
+            for (String fileName : orderFileNames) {
+                // Set dateString to date of file
+                dateString = fileName.substring(7, 15);
+
+                // Declare and initialize LocalDate object from dateString and formatter
+                LocalDate localDate = LocalDate.parse(dateString, dateTimeFormatter);
+
+                orderList = readOrderFile(localDate);
+
+                for (Order order : orderList) {
+                    orderNumList.add(order.getOrderNumber());
+                }
+            }
+
+            if (orderNumList.isEmpty())
+                return 1;
+            else
+                return orderNumList.get(orderNumList.size() - 1) + 1;
+        } catch (Exception e) {
+            // Throw exception if unable to read order files/generate new order number
+            throw new PersistenceException("Unable to generate new order number.");
         }
     }
 }

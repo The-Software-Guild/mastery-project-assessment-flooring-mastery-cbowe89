@@ -53,16 +53,6 @@ public class UserIOConsoleImpl implements UserIO {
     }
 
     /**
-     * Prints a formatted message with a minimum BigDecimal value
-     * @param message message to print
-     * @param min minimum BigDecimal value
-     */
-    @Override
-    public void printf(String message, BigDecimal min) {
-        System.out.printf(message, min);
-    }
-
-    /**
      * Takes in a prompt to display to the console, waits
      * for an answer (String) from the user to return
      * @param prompt String, explains what info is wanted
@@ -167,7 +157,7 @@ public class UserIOConsoleImpl implements UserIO {
             if (num.doubleValue() >= min.doubleValue())
                 invalidInput = false;
             else
-                printf("Selection must be greater than %d\n", min);
+                this.print("Selection must be at least " + min + ".");
         }
 
         return num;
@@ -220,7 +210,7 @@ public class UserIOConsoleImpl implements UserIO {
                 if (dateEntered.isAfter(minDate))
                     invalidInput = false;
                 else
-                    printf("Date must be in the future. (After %s)", minDate);
+                    printf("Date must be in the future. (After %s)\n", minDate);
             } catch (DateTimeParseException e) {
                 this.print("Input error. Please enter a date in the format of MMddyyyy.");
             }

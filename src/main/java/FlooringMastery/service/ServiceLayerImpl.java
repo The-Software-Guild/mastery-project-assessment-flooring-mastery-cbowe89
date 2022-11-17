@@ -53,13 +53,13 @@ public class ServiceLayerImpl implements ServiceLayer {
      */
     @Override
     public Order getOrder(int orderNumber, LocalDate orderDate)
-            throws OrderNotFoundException {
-        try {
-            return ORDER_DAO.getOrder(orderNumber, orderDate);
-        } catch (PersistenceException e) {
+            throws OrderNotFoundException, PersistenceException {
+        Order order =  ORDER_DAO.getOrder(orderNumber, orderDate);
+        if (order == null) {
             throw new OrderNotFoundException("No order found matching the "
-                    + "date and order number entered.", e);
+                    + "date and order number entered.");
         }
+        return order;
     }
 
     /**

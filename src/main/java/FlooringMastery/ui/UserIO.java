@@ -8,8 +8,6 @@ public interface UserIO {
 
     void printf(String message, LocalDate date);
 
-    void printf(String message, BigDecimal min);
-
     void printf(String message, int min, int max);
 
     String readString(String prompt);

@@ -4,11 +4,9 @@ import FlooringMastery.model.Order;
 import FlooringMastery.model.Product;
 import FlooringMastery.model.State;
 
-import java.io.File;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 /**
@@ -27,6 +25,10 @@ public class OrderDaoImpl implements OrderDao {
         FILE_DAO = new FileDaoImpl();
     }
 
+    public OrderDaoImpl(String orderDirectory) {
+        this.FILE_DAO = new FileDaoImpl(orderDirectory);
+    }
+
     /**
      * Retrieves Order information from an order file based on
      * the parameters that the method receives.
@@ -39,19 +41,23 @@ public class OrderDaoImpl implements OrderDao {
     @Override
     public Order getOrder(int orderNumber, LocalDate orderDate)
             throws PersistenceException {
-        // Read order file for date entered and stored data in List
-        List<Order> orderList = FILE_DAO.readOrderFile(orderDate);
+        try {
+            // Read order file for date entered and stored data in List
+            List<Order> orderList = FILE_DAO.readOrderFile(orderDate);
 
-        // Declare and initialize HashMap to map Orders from file
-        Map<Integer, Order> orderMap = new HashMap<>();
+            // Declare and initialize HashMap to map Orders from file
+            Map<Integer, Order> orderMap = new HashMap<>();
 
-        // Iterate through orderList putting each order into the map
-        // with key = orderNumber and value = Order object
-        for (Order order : orderList)
-            orderMap.put(order.getOrderNumber(), order);
+            // Iterate through orderList putting each order into the map
+            // with key = orderNumber and value = Order object
+            for (Order order : orderList)
+                orderMap.put(order.getOrderNumber(), order);
 
-        // Get and return Order object from map based on order number
-        return orderMap.get(orderNumber);
+            // Get and return Order object from map based on order number
+            return orderMap.get(orderNumber);
+        } catch (PersistenceException e) {
+            throw new PersistenceException("Order not found");
+        }
     }
 
     /**
@@ -100,8 +106,8 @@ public class OrderDaoImpl implements OrderDao {
                 productType, newOrderArea);
 
         // Set remain Order values
-        newOrder.setOrderNumber(generateNewOrderNum());
-        newOrder.setTaxRate(state.getTaxRate());
+        newOrder.setOrderNumber(FILE_DAO.generateNewOrderNum());
+        newOrder.setTaxRate(state.getTaxRate().setScale(3, RoundingMode.HALF_UP));
         newOrder.setCostPerSquareFoot(product.getCostPerSquareFoot());
         newOrder.setLaborCostPerSquareFoot(product.getLaborCostPerSquareFoot());
         newOrder.setMaterialCost(materialCost);
@@ -159,7 +165,7 @@ public class OrderDaoImpl implements OrderDao {
 
         // Set remain Order values
         editedOrder.setOrderNumber(order.getOrderNumber());
-        editedOrder.setTaxRate(state.getTaxRate());
+        editedOrder.setTaxRate(state.getTaxRate().setScale(3, RoundingMode.HALF_UP));
         editedOrder.setCostPerSquareFoot(product.getCostPerSquareFoot());
         editedOrder.setLaborCostPerSquareFoot(product.getLaborCostPerSquareFoot());
         editedOrder.setMaterialCost(materialCost);
@@ -292,54 +298,5 @@ public class OrderDaoImpl implements OrderDao {
                                       BigDecimal laborCost) {
         // total = tax + materialCost + laborCost
         return tax.add(materialCost).add(laborCost);
-    }
-
-    /**
-     * Private method fetches the latest order number assigned, then
-     * calculates and returns a new order number to assign to a new order
-     * @return int newOrderNum
-     * @throws PersistenceException if error occurs reading files
-     */
-    private int generateNewOrderNum() throws PersistenceException {
-        // Declare variables
-        int newOrderNum; // To be generated
-        Order lastOrder; // To store order number of last order
-        List<Order> orderList; // To store list of orders in the latest Order file
-        String dateString; // To store date portion of Order file name
-
-        // Formatter to match date format in Order file names
-        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("MMddyyyy");
-
-        // Create File object for directory
-        File directoryPath = new File("Orders");
-
-        try {
-            // Declare and initialize list with names of all order files
-            List<String> orderFileNames =
-                    List.of(Objects.requireNonNull(directoryPath.list()));
-
-            // Latest Order file will have most recently assigned Order number
-            String latestOrderFile = orderFileNames.get(orderFileNames.size() - 1);
-
-            // Set dateString to date of Order file
-            dateString = latestOrderFile.substring(7, 15);
-
-            // Create LocalDate object from dateString
-            LocalDate localDate = LocalDate.parse(dateString, dateTimeFormatter);
-
-            // Read Order file, store in orderList
-            orderList = FILE_DAO.readOrderFile(localDate);
-
-            // Last Order in file will have the last Order number assigned
-            lastOrder = orderList.get(orderList.size() - 1);
-
-            // Add 1 to last Order number assigned, store as newOrderNum
-            newOrderNum = lastOrder.getOrderNumber() + 1;
-
-            return newOrderNum;
-        } catch (Exception e) {
-            // Throw exception if unable to read order files/generate new order number
-            throw new PersistenceException("Unable to generate new order number.");
-        }
     }
 }

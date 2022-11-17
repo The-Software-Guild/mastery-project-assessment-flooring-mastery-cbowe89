@@ -37,4 +37,6 @@ public interface FileDao {
 
     void exportAllData(String exportFile)
             throws PersistenceException;
+
+    int generateNewOrderNum() throws PersistenceException;
 }

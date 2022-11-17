@@ -21,8 +21,6 @@
         <constructor-arg ref="userIO"/>
     </bean>
 
-    <bean id="fileDao" class="FlooringMastery.dao.FileDaoImpl"/>
-
     <bean id="orderDao" class="FlooringMastery.dao.OrderDaoImpl"/>
 
     <bean id="productDao" class="FlooringMastery.dao.ProductDaoImpl"/>
