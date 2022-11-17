@@ -22,13 +22,18 @@ public class FileDaoImpl implements FileDao {
     private final String ORDER_DIRECTORY;
     private final String EXPORT_FILE;
 
+    /**
+     * No args constructor for FileDaoImpl
+     */
     public FileDaoImpl() {
         this.ORDER_DIRECTORY = "Orders";
         this.EXPORT_FILE = "Backup/DataExport.txt";
     }
 
     /**
-     * No args constructor for FileDaoImpl
+     * Constructor accepts parameters for orderDirectory and exportFile names
+     * @param orderDirectory order file directory
+     * @param exportFile export file name
      */
     public FileDaoImpl(String orderDirectory, String exportFile) {
         this.ORDER_DIRECTORY = orderDirectory;

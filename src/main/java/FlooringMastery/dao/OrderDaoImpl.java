@@ -25,6 +25,12 @@ public class OrderDaoImpl implements OrderDao {
         FILE_DAO = new FileDaoImpl();
     }
 
+    /**
+     * Constructor accepts parameters for orderDirectory and exportFile
+     * name, creates new instance of FileDaoImpl with parameters.
+     * @param orderDirectory order file directory
+     * @param exportFile export file name
+     */
     public OrderDaoImpl(String orderDirectory, String exportFile) {
         this.FILE_DAO = new FileDaoImpl(orderDirectory, exportFile);
     }
